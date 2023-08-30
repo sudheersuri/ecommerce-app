@@ -1,5 +1,5 @@
 import { Link } from 'expo-router';
-import { Button, Dimensions, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, Dimensions, FlatList, Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
@@ -11,7 +11,7 @@ const numColumns = 2;
 
 export default function Page() {
   const {globals,setGlobals}= useContext(GlobalContext);
-  const [searchText,setSearchText]  = useState('');
+ 
   const categories = [
     { id: 1, name: 'New Arrivals' },
     { id: 2, name: 'Shoes' },
@@ -141,18 +141,69 @@ export default function Page() {
     };
     checkAccessToken();
   }, []);
-  const QtySelector = ({item}) => {
+  const QtySelector = ({ item}) => {
+    const { cartItems } = globals;
+  
+    const currentCartItem = cartItems.find(cartItem => cartItem.id === item.id);
+    const currentQty = currentCartItem ? currentCartItem.qty : 0;
+  
+    const handleIncrement = () => {
+      const updatedCartItems = cartItems.map(cartItem =>
+        cartItem.id === item.id ? { ...cartItem, qty: cartItem.qty + 1 } : cartItem
+      );
+      setGlobals({
+        ...globals,
+        cartItems: updatedCartItems,
+      });
+    };
+  
+    const handleDecrement = () => {
+      if (currentQty > 0) {
+        const updatedCartItems = cartItems.map(cartItem =>
+          cartItem.id === item.id ? { ...cartItem, qty: cartItem.qty - 1 } : cartItem
+        );
+        setGlobals({
+          ...globals,
+          cartItems: updatedCartItems,
+        });
+      }
+    };
+  
     return (
-      <Ionicons name="add-circle" size={30} color="white" onPress={()=>null} />
+      <View>
+        {currentQty === 0 ? (
+          <TouchableOpacity
+            onPress={() =>
+              setGlobals({
+                ...globals,
+                cartItems: [...globals.cartItems, { ...item, qty: 1 }],
+              })
+            }
+          >
+            <Ionicons name="add-circle" size={30} color="white" />
+          </TouchableOpacity>
+        ) : (
+          <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+            <TouchableOpacity onPress={handleIncrement}>
+            <Ionicons name="add-circle" size={30} color="white" />
+            </TouchableOpacity>
+            <Text style={{color:'#fff'}}>{currentQty}</Text>
+            <TouchableOpacity onPress={handleDecrement}>
+            <Ionicons name="remove-circle" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     );
-  }
+  };
   const ProductItem = ({ item,index }) => (
     <View style={[styles.productItem,{
       borderLeftWidth:index%2===0?0:1,
       borderRightWidth:index%2===0?1:0,
+      position:'relative',
     }]}>
-      <Image source={{uri:item.imageURL}} style={{width:screenWidth/2-15,height:screenWidth/2-15}} />
-      <View style={{justifyContent:'space-between',alignItems:"center",flexDirection:'row',width:'100%',paddingHorizontal:10,paddingBottom:10}}>
+      <Image source={{uri:item.imageURL}} style={{width:screenWidth/2-15,height:screenWidth/2-15,marginBottom:40}} />
+      <View style={{position:'absolute',bottom:0,justifyContent:'space-between',alignItems:"flex-end",flexDirection:'row',width:'100%',paddingHorizontal:10,paddingBottom:10}}>
         <View>
            <Text style={{color:'#fff'}}>$ {item.price}</Text>
            <Text style={{color:'gray',fontWeight:'bold'}}>{item.name}</Text>
@@ -192,19 +243,31 @@ export default function Page() {
     );
   };
   const SearchBar = ()  => {
+    const [searchText,setSearchText]  = useState('');
     return (
-      <View style={{borderWidth:1,borderTopColor:'gray',borderBottomColor:'gray',flexDirection:'row',alignItems:'center',paddingVertical:7,paddingHorizontal: 15}}>
+      <View style={{flexDirection:'row',justifyContent:'space-between',borderWidth:1,borderTopColor:'gray',borderBottomColor:'gray',flexDirection:'row',alignItems:'center',paddingVertical:7,paddingHorizontal: 15}}>
+            <View style={{flexDirection:'row'}}>
              <Ionicons name="ios-search" size={24} color="white" style={{opacity:0.5}} />
              <TextInput
               style={styles.input}
               placeholder="Search..."
               placeholderTextColor={'gray'}
-              value={searchText}
+              defaultValue={searchText}
               onChangeText={(text) => setSearchText(text)}
             />  
+            </View>
+            {searchText && 
+              <Pressable onPress={()=>setSearchText('')}>
+                <Ionicons name="close" size={24} color="white" style={{opacity:0.5,marginLeft:10}} />
+              </Pressable>
+            }
       </View>
     )
   }
+  const getCartItemsCount = () => {
+    return globals.cartItems.reduce((totalCount, cartItem) => totalCount + cartItem.qty, 0);
+  };
+  
   const Header = () => {
     return (
       <View style={styles.header}>
@@ -214,7 +277,15 @@ export default function Page() {
         </View>
         <View style={{flexDirection:'row',alignItems:'center'}}>
           <Text style={{fontWeight:'bold',color:'#fff'}}>{response && response.logged_in_as}</Text>
-          <Ionicons name="cart" size={30} color="white" onPress={()=>null} />
+          <Pressable style={{ position: 'relative', borderRadius: 10 }}  onPress={() => {
+            router.replace('/checkout');
+            }} >
+            <Ionicons name="cart" size={30} color="white"/>
+              <View style={{ backgroundColor: '#FF6746', paddingHorizontal:5, position: 'absolute', top: -5, right: -5, borderRadius: 50 }}>
+                <Text style={{ color: '#fff', fontWeight:"bold" }}>{getCartItemsCount()}</Text>
+              </View>
+          </Pressable>
+
         </View>
       </View>
     );
