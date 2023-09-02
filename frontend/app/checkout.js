@@ -85,7 +85,7 @@ export default function Checkout() {
                       </View>
                       <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
                 </Pressable>
-                <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',borderTopWidth:1,borderTopColor:'gray',paddingVertical:10}}>
+                <Pressable style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',borderTopWidth:1,borderTopColor:'gray',paddingVertical:10}} onPress={()=>router.push('/saved_addresses/list')}>
                       <View style={{justifyContent:'space-between'}}>
                           <Text style={{color:'#fff'}}>Shipping</Text>
                           <View style={{flexDirection:'row',alignItems:'center',marginTop:10}}>
@@ -94,7 +94,7 @@ export default function Checkout() {
                           </View>
                       </View>
                       <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
-                </View>
+                </Pressable>
                 <View style={{borderTopWidth:1,borderTopColor:'gray',paddingVertical:20}}>
                   <View style={{justifyContent:'space-between',flexDirection:'row'}}>
                     <Text style={{color:'#fff'}}>Subtotal</Text>
