@@ -75,25 +75,25 @@ export default function Checkout() {
               <CartItemsList />
           </View>
           <View style={{flex:5,paddingHorizontal:3}}>
-                <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginVertical:10}}>
+                <Pressable style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',marginVertical:10}} onPress={()=>router.push('/payment_methods/list')}>
                       <View style={{justifyContent:'space-between'}}>
                           <Text style={{color:'#fff'}}>Payment</Text>
                           <View style={{flexDirection:'row',alignItems:'center',marginTop:10}}>
-                                <Ionicons name="wallet-outline" size={30} color="#fff" />
-                                <Text style={{color:'#fff',marginLeft:5}}> Visa ending in 1090</Text>
+                                <Ionicons name="wallet-outline" size={20} color="#fff" />
+                                <Text style={{color:'#fff',marginLeft:5}}>No Payment method selected</Text>
                           </View>
                       </View>
-                      <Ionicons name="chevron-forward-outline" size={30} color="#fff" />
-                </View>
-                <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',borderTopWidth:1,borderTopColor:'gray',paddingVertical:10}}>
+                      <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
+                </Pressable>
+                <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',borderTopWidth:1,borderTopColor:'gray',paddingVertical:10}}>
                       <View style={{justifyContent:'space-between'}}>
                           <Text style={{color:'#fff'}}>Shipping</Text>
                           <View style={{flexDirection:'row',alignItems:'center',marginTop:10}}>
-                                <Ionicons name="location" size={30} color="#fff" />
-                                <Text style={{color:'#fff',marginLeft:5}}> 213 Sentra Street</Text>
+                                <Ionicons name="location" size={20} color="#fff" />
+                                <Text style={{color:'#fff'}}> 213 Sentra Street</Text>
                           </View>
                       </View>
-                      <Ionicons name="chevron-forward-outline" size={30} color="#fff" />
+                      <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
                 </View>
                 <View style={{borderTopWidth:1,borderTopColor:'gray',paddingVertical:20}}>
                   <View style={{justifyContent:'space-between',flexDirection:'row'}}>
