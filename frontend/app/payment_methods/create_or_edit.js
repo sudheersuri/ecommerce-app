@@ -293,7 +293,7 @@ export default function create_or_edit() {
             <View style={styles.fullWidth}>
               <Text style={[styles.label, { marginBottom: 10 }]}>Zip Code</Text>
               <Controller
-                name="zipCode"
+                name="zipcode"
                 control={control}
                 rules={{ required: true }}
                 render={({ field }) => (
@@ -304,7 +304,7 @@ export default function create_or_edit() {
                       style={styles.field}
                       placeholderTextColor={"gray"}
                     />
-                    {errors.zipCode && (
+                    {errors.zipcode && (
                       <Text style={styles.errorText}>Zip Code is required</Text>
                     )}
                   </View>

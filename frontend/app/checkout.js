@@ -5,10 +5,14 @@ import GlobalContext from '../GlobalContext';
 import { FlatList } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { StripeProvider } from "@stripe/stripe-react-native";
+import TestCheckout from '../components/PaymentButton';
+import PaymentButton from '../components/PaymentButton';
 
 export default function Checkout() {
   const{globals,setGlobals} = useContext(GlobalContext);
   const router = useRouter();
+  
   const Header = () => {
     return (
       <View style={{position:'relative', alignItems: 'center',borderBottomWidth:1,borderBottomColor:'gray',paddingBottom:20}}>
@@ -16,6 +20,12 @@ export default function Checkout() {
         <Text style={{ color:'#fff',marginTop:5,fontSize:18,fontWeight:'bold' }}>Checkout</Text>
       </View>
     );
+  }
+  getShippingAddress = () => {
+    //get the shippingAddressId from globals and find the address in the savedAddresses array
+    let address = globals?.savedAddresses.find(address => address.id === globals.shippingAddressId) ?? null;
+    //join them with comma
+    return address ? `${address.address}, ${address.city}, ${address.state}, ${address.zipcode}` : null;
   }
   const QtySelector = ({product}) => {
     return (
@@ -71,11 +81,11 @@ export default function Checkout() {
     <View style={styles.container}>
       <Header />
       <View style={{flex:1}}>
-          <View style={{flex:8,marginTop:5,borderBottomWidth:1,borderBottomColor:'gray'}}>
+          <View style={{flex:10,marginTop:5,borderBottomWidth:1,borderBottomColor:'gray'}}>
               <CartItemsList />
           </View>
-          <View style={{flex:5,paddingHorizontal:3}}>
-                <Pressable style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',marginVertical:10}} onPress={()=>router.push('/payment_methods/list')}>
+          <View style={{flex:4,paddingHorizontal:3}}>
+                {/* <Pressable style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',marginVertical:10}} onPress={()=>router.push('/payment_methods/list')}>
                       <View style={{justifyContent:'space-between'}}>
                           <Text style={{color:'#fff'}}>Payment</Text>
                           <View style={{flexDirection:'row',alignItems:'center',marginTop:10}}>
@@ -84,14 +94,21 @@ export default function Checkout() {
                           </View>
                       </View>
                       <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
-                </Pressable>
+                </Pressable> */}
                 <Pressable style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',borderTopWidth:1,borderTopColor:'gray',paddingVertical:10}} onPress={()=>router.push('/saved_addresses/list')}>
                       <View style={{justifyContent:'space-between'}}>
-                          <Text style={{color:'#fff'}}>Shipping</Text>
-                          <View style={{flexDirection:'row',alignItems:'center',marginTop:10}}>
-                                <Ionicons name="location" size={20} color="#fff" />
-                                <Text style={{color:'#fff'}}> 213 Sentra Street</Text>
-                          </View>
+                          <Text style={{color:'#fff'}}>Shipping To</Text>
+                          {getShippingAddress() ? (
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                              <Ionicons name="location" size={20} color="#fff" />
+                              <Text style={{ color: '#fff' }}>{getShippingAddress()}</Text>
+                            </View>
+                          ) : (
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                              <Ionicons name="ios-alert-circle" size={20} color="red" />
+                              <Text style={{ color: 'red' }}> No shipping address selected</Text>
+                            </View>
+                          )}
                       </View>
                       <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
                 </Pressable>
@@ -112,18 +129,11 @@ export default function Checkout() {
                
                 
           </View>
-          <Pressable onPress={()=>{}} style={{flex:3}}>
-                  <LinearGradient
-                    colors={["#DF00BC", "#9C00E4"]}
-                    start={[0, 0]}
-                    end={[1, 0]}
-                    style={[styles.button, { marginTop: 40 }]}
-                  >
-                    <Text style={{ color: "#fff", fontWeight: "600",fontSize:18 }}>
-                       Pay $40
-                    </Text>
-                  </LinearGradient>
-          </Pressable>
+          <View style={{flex:3}}>
+          <StripeProvider publishableKey="pk_test_51MpIlIDYTDNtMFwaNHZ8W0ywBPcphtXCrYMO0A7nrcrTEkZImR4N7kQVsYNqkoNFPX5Ex6BkNTI4XZG3aBG8XOkZ00GVBBGcUf">
+                <PaymentButton amount={300}/>
+          </StripeProvider>
+          </View>
       </View>
     </View>
   )

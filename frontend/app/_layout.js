@@ -10,7 +10,7 @@ export default function HomeLayout() {
     // Choose the theme based on device appearance
     const theme = colorScheme === "dark" ? darkTheme : lightTheme;
     
-    const [globals, setGlobals] = useState({ theme: theme,selectedCategory:1,cartItems:[] });
+    const [globals, setGlobals] = useState({ theme: theme,selectedCategory:1,cartItems:[],savedAddresses:[],shippingAddressId:0 });
     return (
         <GlobalContext.Provider value={{ globals, setGlobals }}>
         <Stack screenOptions={{headerShown:false}}/>

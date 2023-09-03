@@ -106,7 +106,29 @@ export default function Page() {
     },
   ];
   
+  const fetchAddresses = async () => {
+    try {
+      const url = "http://127.0.0.1:5000/get_addresses";
+      const access_token = await AsyncStorage.getItem('access_token');
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${access_token}`,
+          'Content-Type': 'application/json', // You can adjust headers as needed
+        },
+      });
   
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      if(data.length)
+        setGlobals({...globals,savedAddresses:data,shippingAddressId:data[0].id}); 
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  };
   
   useEffect(() => {
     const checkAccessToken = async () => {
@@ -135,6 +157,7 @@ export default function Page() {
           console.log(data);
           setResponse(data);
         }
+        fetchAddresses();
       } catch (error) {
         console.error('Error:', error);
       }
