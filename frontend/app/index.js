@@ -5,6 +5,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import GlobalContext from '../GlobalContext';
+import env from '../env';
+import { API_REQUEST, checkAccessToken, redirectToLoginWithSessionExpiredMessage, showToast } from '../functions';
 
 const screenWidth = Dimensions.get('window').width;
 const numColumns = 2;
@@ -22,7 +24,7 @@ export default function Page() {
     // Add more categories as needed
   ];
   const router = useRouter();
-  const [response, setResponse] = useState(null);
+
   const products = [
     {
       id: 1,
@@ -108,61 +110,27 @@ export default function Page() {
   
   const fetchAddresses = async () => {
     try {
-      const url = "http://127.0.0.1:5000/get_addresses";
-      const access_token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${access_token}`,
-          'Content-Type': 'application/json', // You can adjust headers as needed
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-  
+      const REQUEST_URL = `${env.API_URL}/get_addresses`;
+      const response = await API_REQUEST(REQUEST_URL,'GET',null,true);
       const data = await response.json();
-      if(data.length)
-        setGlobals({...globals,savedAddresses:data,shippingAddressId:data[0].id}); 
+     
+      if(response.status===401)
+        redirectToLoginWithSessionExpiredMessage(router);
+      else if(response.status===200)
+      {
+        if(data.length)
+          setGlobals({...globals,savedAddresses:data,shippingAddressId:data[0].id}); 
+      }
+      else 
+        showToast('error',data.message);
     } catch (error) {
-      console.error('Fetch error:', error);
+      showToast('error',error);
     }
   };
   
   useEffect(() => {
-    const checkAccessToken = async () => {
-      try {
-        const access_token = await AsyncStorage.getItem('access_token');
-        
-        if (!access_token) {
-          // Access token is not present, navigate to login screen
-          router.replace('/login');
-          return;
-        }
-
-        const response = await fetch("http://127.0.0.1:5000/protected", {
-          headers: {
-            'Authorization': `Bearer ${access_token}`
-          }
-        });
-
-        if (!response.ok) {
-         router.replace('/login');
-        }
-        else
-        {
-          // Access token is valid, display the protected page
-          const data = await response.json();
-          console.log(data);
-          setResponse(data);
-        }
-        fetchAddresses();
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-    checkAccessToken();
+    checkAccessToken(router);
+    fetchAddresses();
   }, []);
   const QtySelector = ({ item}) => {
     const { cartItems } = globals;
@@ -181,26 +149,43 @@ export default function Page() {
     };
   
     const handleDecrement = () => {
-      if (currentQty > 0) {
+     
+      if (currentQty > 1) {
         const updatedCartItems = cartItems.map(cartItem =>
           cartItem.id === item.id ? { ...cartItem, qty: cartItem.qty - 1 } : cartItem
         );
+       
         setGlobals({
           ...globals,
           cartItems: updatedCartItems,
         });
       }
+      else 
+      {
+        //remove item from cart
+        const updatedCartItems = cartItems.filter(cartItem => cartItem.id !== item.id);
+        setGlobals({
+          ...globals,
+          cartItems: updatedCartItems,
+        });
+
+      }
     };
-  
+    
+    const addItemToCart = () => {
+      const updatedCartItems = [...cartItems, { ...item, qty: 1 }];
+      setGlobals({
+        ...globals,
+        cartItems: updatedCartItems,
+      });
+    };
+
     return (
       <View>
         {currentQty === 0 ? (
           <TouchableOpacity
             onPress={() =>
-              setGlobals({
-                ...globals,
-                cartItems: [...globals.cartItems, { ...item, qty: 1 }],
-              })
+              addItemToCart()
             }
           >
             <Ionicons name="add-circle" size={30} color="white" />
@@ -299,16 +284,15 @@ export default function Page() {
          <Text style={styles.companyName}>Shopper</Text>
         </View>
         <View style={{flexDirection:'row',alignItems:'center'}}>
-          <Text style={{fontWeight:'bold',color:'#fff'}}>{response && response.logged_in_as}</Text>
+          <Text style={{fontWeight:'bold',color:'#fff'}}>{globals.username && globals.username}</Text>
           <Pressable style={{ position: 'relative', borderRadius: 10 }}  onPress={() => {
-            router.replace('/checkout');
+           getCartItemsCount()? router.push('/checkout'):'';
             }} >
             <Ionicons name="cart" size={30} color="white"/>
               <View style={{ backgroundColor: '#FF6746', paddingHorizontal:5, position: 'absolute', top: -5, right: -5, borderRadius: 50 }}>
                 <Text style={{ color: '#fff', fontWeight:"bold" }}>{getCartItemsCount()}</Text>
               </View>
           </Pressable>
-
         </View>
       </View>
     );

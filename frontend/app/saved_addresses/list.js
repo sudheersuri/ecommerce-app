@@ -3,10 +3,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import GlobalContext from '../../GlobalContext';
 
-const API_URL = "http://127.0.0.1:5000/get_addresses";
 
 export default function List() {
    const router = useRouter();

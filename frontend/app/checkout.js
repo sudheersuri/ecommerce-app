@@ -12,16 +12,17 @@ import PaymentButton from '../components/PaymentButton';
 export default function Checkout() {
   const{globals,setGlobals} = useContext(GlobalContext);
   const router = useRouter();
-  
+  const shippingCharge = 5;
   const Header = () => {
     return (
       <View style={{position:'relative', alignItems: 'center',borderBottomWidth:1,borderBottomColor:'gray',paddingBottom:20}}>
-        <Ionicons name="chevron-back-outline" size={30} color="#fff" style={{position:'absolute',left:0}} onPress={() => router.replace('/')} />
+        <Ionicons name="chevron-back-outline" size={30} color="#fff" style={{position:'absolute',left:0}} onPress={() => router.back()} />
         <Text style={{ color:'#fff',marginTop:5,fontSize:18,fontWeight:'bold' }}>Checkout</Text>
       </View>
     );
   }
-  getShippingAddress = () => {
+  const getShippingAddress = () => {
+   
     //get the shippingAddressId from globals and find the address in the savedAddresses array
     let address = globals?.savedAddresses.find(address => address.id === globals.shippingAddressId) ?? null;
     //join them with comma
@@ -31,14 +32,23 @@ export default function Checkout() {
     return (
       <View style={{flexDirection:'row',alignItems:'center'}}>
         <Pressable onPress={()=>
-            setGlobals({...globals,cartItems:globals.cartItems.map(item => item.id === product.id ? {...item,qty:item.qty-1} : item)})
+              {
+                  //remove item if qty is 0
+                  if(product.qty === 1)
+                  {
+                    setGlobals({...globals,cartItems:globals.cartItems.filter(cartItem => cartItem.id !== product.id)})
+                    return;
+                  }
+                  else 
+                    setGlobals({...globals,cartItems:globals.cartItems.map(item => item.id === product.id ? {...item,qty:item.qty-1} : item)})
+              }
         }> 
           <Ionicons name="remove-circle-outline" size={30} color="#fff" />
           </Pressable>
         <Text style={{color:'#fff',marginHorizontal:10}}>{product.qty}</Text>
         <Pressable
           onPress={()=>
-            setGlobals({...globals,cartItems:globals.cartItems.map(item => item.id === product.id ? {...item,qty:item.qty+1} : item)})
+              setGlobals({...globals,cartItems:globals.cartItems.map(item => item.id === product.id ? {...item,qty:item.qty+1} : item)})
         }
         >
         <Ionicons name="add-circle-outline" size={30} color="#fff" />
@@ -76,6 +86,15 @@ export default function Checkout() {
         keyExtractor={item => item.id}
       />) : <Text style={{color:'#fff'}}>No items in cart</Text>
   } ;
+  const getSubTotal = () => {
+    return globals.cartItems.reduce((total,item)=>total+item.qty*item.price,0);
+  }
+  const getTax = () => {
+    return ((getSubTotal()+shippingCharge) * 0.13).toFixed(2);
+  }
+  const getTotal = () => {
+    return (getSubTotal() + parseFloat(getTax())).toFixed(2);
+  }
   
   return (
     <View style={styles.container}>
@@ -115,15 +134,19 @@ export default function Checkout() {
                 <View style={{borderTopWidth:1,borderTopColor:'gray',paddingVertical:20}}>
                   <View style={{justifyContent:'space-between',flexDirection:'row'}}>
                     <Text style={{color:'#fff'}}>Subtotal</Text>
-                    <Text style={{color:'#fff'}}>$20</Text>
+                    <Text style={{color:'#fff'}}>${getSubTotal()}</Text>
                   </View>
                   <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:10}}>
                     <Text style={{color:'#fff'}}>Shipping</Text>
-                    <Text style={{color:'#fff'}}>$20</Text>
+                    <Text style={{color:'#fff'}}>${shippingCharge}</Text>
+                  </View>
+                  <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:10}}>
+                    <Text style={{color:'#fff'}}>Tax</Text>
+                    <Text style={{color:'#fff'}}>${getTax()}</Text>
                   </View>
                   <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:10}}>
                     <Text style={{color:'#fff'}}>Total</Text>
-                    <Text style={{color:'#fff'}}>$40</Text>
+                    <Text style={{color:'#fff'}}>${getTotal()}</Text>
                   </View>
                 </View>
                
@@ -131,7 +154,7 @@ export default function Checkout() {
           </View>
           <View style={{flex:3}}>
           <StripeProvider publishableKey="pk_test_51MpIlIDYTDNtMFwaNHZ8W0ywBPcphtXCrYMO0A7nrcrTEkZImR4N7kQVsYNqkoNFPX5Ex6BkNTI4XZG3aBG8XOkZ00GVBBGcUf">
-                <PaymentButton amount={300}/>
+                <PaymentButton amount={getTotal()}/>
           </StripeProvider>
           </View>
       </View>

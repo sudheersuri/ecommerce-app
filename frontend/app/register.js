@@ -15,8 +15,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import Toast from 'react-native-toast-message';
 import { useState } from "react";
 import { SocialMediaButton } from "../components/SocialMediaButton";
+import { API_REQUEST, showToast } from "../functions";
+import env from "../env";
 
-const API_URL = "http://127.0.0.1:5000/register";
+
+const REQUEST_URL = `${env.API_URL}/register`;
+
 export default function Register() {
   
   const [loading,setLoading] = useState(false);
@@ -34,38 +38,28 @@ export default function Register() {
   const router = useRouter();
 
 
-  const showToast = (type,message) => {
-    Toast.show({
-      type,
-      text2: message,
-      position:'top'
-    });
-  }
 
-  const onSubmit = (reqdata) => {
+  const onSubmit = async (reqdata) => {
     setLoading(true);
-    console.log(reqdata);
-    fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reqdata),
-    })
-      .then((response) => response.json())
-      .then((data) => {  
-          if(data.message.includes("success"))
-            router.replace("/login");
-          else
-            showToast('error',data.message);
-      })
-      .catch((error) => {
-        showToast('error',error.message);
-        console.error("Error:", error);
-      })
-      .finally(()=>{
-        setLoading(false);
-      });;
+    const response = await API_REQUEST(REQUEST_URL,'POST',reqdata);
+    const data = await response.json();
+   
+    if(response.status!==200)
+    {
+      showToast('error',data.message);
+      setLoading(false);
+      return;
+    }
+    else
+    {
+      showToast('success',data.message);
+      //after 2 seconds redirect to login page
+      setTimeout(()=>{
+      setLoading(false);
+      router.replace('/login');
+      },3000);
+      return;
+    }
   };
 
   return (

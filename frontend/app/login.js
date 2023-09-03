@@ -1,7 +1,7 @@
 
 import { Text, View, TextInput, Button, Alert, Pressable, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import { Link, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,19 +9,16 @@ import Toast from 'react-native-toast-message';
 import {  useContext, useEffect, useState } from "react";
 import { SocialMediaButton } from "../components/SocialMediaButton";
 import GlobalContext from "../GlobalContext";
+import { API_REQUEST, showToast } from "../functions";
+import env from '../env';
 
-const API_URL = "http://127.0.0.1:5000/login";
+const REQUEST_URL = `${env.API_URL}/login`;
+
 export default function Login() {
   const {globals,setGlobals}= useContext(GlobalContext);
   const {theme} = globals;
   const [loading,setLoading] = useState(false);
-  const showToast = (message) => {
-    Toast.show({
-      type: 'error',
-      text2: message,
-      position:'top'
-    });
-  }
+  const params = useLocalSearchParams();
   const router = useRouter();
   const {
     control,
@@ -33,58 +30,46 @@ export default function Login() {
       password: "",
     },
   });
-  const onSubmit = (reqdata) => {
+  const onSubmit = async (reqdata) => {
     setLoading(true);
-    try
+    const response = await API_REQUEST(REQUEST_URL,'POST',reqdata);
+    const data = await response.json();
+    setLoading(false);
+    if(response.status===401) 
     {
-    JSON.stringify(reqdata);
+      showToast('error',data.message);
+      return;
     }
-    catch(e)
+    else if(response.status===200)
     {
-      console.log("test1234"+e);
+      if(data.access_token){
+        await AsyncStorage.setItem('access_token', data.access_token);
+        setGlobals({...globals,username:data.username});
+        router.replace('/');
+        return;
+      }
+      else 
+      {
+        showToast('error',data.message);
+        return;
+      }
     }
-    fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(reqdata)
-    })
-      .then(response => response.json()
-      )
-      .then(data => {
-        if(data.access_token){
-          AsyncStorage.setItem('access_token', data.access_token).then(
-            () => {
-              router.replace('/');
-            }
-          );
-        }
-        else 
-        {
-          showToast(data.message);
-        }
-      })
-      .catch(error => {
-        showToast(error.message);
-        console.error('Error:', error);
-      })
-      .finally(()=>{
-        setLoading(false);
-      });
   };
   useEffect(()=>{
-   console.log(theme);
+    if(params?.error) showToast('error',params.error);
+  },[params]);
+
+  useEffect(()=>{
+
   },[theme]);
 
   return (
     <>
     <StatusBar />
     <ScrollView style={styles.container}>
-  
       <Text style={styles.title}>Login</Text>
       <Text style={styles.smallText}>Login with one of the following options</Text>
-      <View style={{marginTop:15,marginBottom:40,flexDirection:'row',justifyContent:'space-between'}}>
+      <View style={styles.SocialMediaButtonsContainer}>
          <SocialMediaButton icon="logo-google"/>
          <SocialMediaButton icon="logo-apple"/>
       </View>
@@ -168,6 +153,7 @@ const styles = StyleSheet.create(
       paddingTop:40,
       paddingHorizontal:15,
     },
+    SocialMediaButtonsContainer:{marginTop:15,marginBottom:40,flexDirection:'row',justifyContent:'space-between'},
     button:{
       paddingVertical:22,
       justifyContent:'center',

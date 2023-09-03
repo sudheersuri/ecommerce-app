@@ -4,23 +4,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStripe } from '@stripe/stripe-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { redirectToOrdersWithSuccessMessage, showToast } from '../functions';
 
 export default function PaymentButton({amount}) {
     const stripe = useStripe();
 
 const pay = async () => {
-  const showToast = (message) => {
-    Toast.show({
-      type: 'error',
-      text2: message,
-      position:'top'
-    });
-  }
+
     try {
       const finalAmount = parseInt(amount);
       const access_token = await AsyncStorage.getItem('access_token');
       if (finalAmount < 1) {
-        showToast('Something went wrong, please try again later.');
+        showToast('error','Something went wrong, please try again later.');
         return;
       }
       const response = await fetch("http://127.0.0.1:5000/create-payment-intent", {
@@ -34,26 +29,26 @@ const pay = async () => {
       const data = await response.json();
       if (!response.ok) {
        
-        showToast(data.message);
+        showToast('error',data.message);
         return;
       }
       const initSheet = await stripe.initPaymentSheet({
         paymentIntentClientSecret: data.clientSecret,
       });
       if (initSheet.error) {
-        showToast(initSheet.error.message);
+        showToast('error',initSheet.error.message);
         return; 
       }
       const presentSheet = await stripe.presentPaymentSheet({
         clientSecret: data.clientSecret,
       });
       if (presentSheet.error) {
-        showToast(presentSheet.error.message);
+        showToast('error',presentSheet.error.message);
        
       }
-      Alert.alert("Payment successfull! Thank you for placing order.");
+      redirectToOrdersWithSuccessMessage();
     } catch (err) {
-      showToast(err.message);
+      showToast('error',err.message);
       return;
     }
   };

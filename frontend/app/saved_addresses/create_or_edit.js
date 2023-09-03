@@ -15,19 +15,16 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
 import GlobalContext from "../../GlobalContext";
+import { showToast } from "../../functions";
+import env from "../../env";
 
-const API_URL = "http://127.0.0.1:5000/save_address";
+
+const REQUEST_URL = `${env.API_URL}/save_address`;
 export default function Page() {
     const [loading,setLoading] = useState(false);
     const router = useRouter();
     const {globals,setGlobals} = useContext(GlobalContext);
-    const showToast = (message) => {
-      Toast.show({
-        type: 'error',
-        text2: message,
-        position:'top'
-      });
-    }
+  
     const Header = () => {
       return (
         <View
@@ -92,7 +89,7 @@ export default function Page() {
         setLoading(true);
         const access_token = await AsyncStorage.getItem('access_token');
         // Handle form submission here
-        fetch(API_URL, {
+        fetch(REQUEST_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -112,7 +109,7 @@ export default function Page() {
             fetchAddresses();
           })
           .catch(error => {
-            showToast(error.message);
+            showToast('error',error.message);
             console.error('Error:', error);
           })
           .finally(()=>{

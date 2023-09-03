@@ -32,7 +32,7 @@ def register():
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     mongo.db.users.insert_one({'username':username,'email': email, 'password': hashed_password})
 
-    return jsonify(message="User registered successfully"), 201
+    return jsonify(message="User registered successfully"), 200
 
 # User login
 @app.route('/login', methods=['POST'])
@@ -49,16 +49,7 @@ def login():
         return jsonify(message="Invalid credentials"), 401
 
     access_token = create_access_token(identity=str(user['_id']))
-    return jsonify(access_token=access_token), 200
-
-# Protected route
-@app.route('/protected', methods=['GET'])
-@jwt_required()
-def protected():
-    current_user_id = get_jwt_identity()
-    current_user = mongo.db.users.find_one({'_id': ObjectId(current_user_id)})
-    return jsonify(logged_in_as=current_user['username']), 200
-
+    return jsonify(access_token=access_token,username=user['username']), 200
 
 @app.route('/create-payment-method', methods=['POST'])
 @jwt_required()  # Ensure the user is authenticated with a valid JWT token
@@ -164,7 +155,7 @@ def save_address():
         # Insert the address document into the 'addresses' collection
         mongo.db.addresses.insert_one(new_address)
 
-        return jsonify({'message': 'Address saved successfully'}), 201
+        return jsonify({'message': 'Address saved successfully'}), 200
 
     except Exception as e:
         return jsonify({'message': str(e)}), 500

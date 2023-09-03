@@ -5,7 +5,6 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function List() {
-   const [paymentMethods,setPaymentMethods] = useState([]);
    const router = useRouter();
    const Header = () => {
         return (

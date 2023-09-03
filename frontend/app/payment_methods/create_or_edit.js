@@ -60,8 +60,6 @@ export default function create_or_edit() {
       setIsBillingSameAsShipping(!isBillingSameAsShipping);
     };
     const onSubmit = (data) => {
-      
-      console.log(data);
       // Handle form submission here
     };
 
