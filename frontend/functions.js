@@ -34,7 +34,7 @@ export const redirectToLoginWithSessionExpiredMessage = async (router) => {
   router.replace({ pathname: "/login", params: { error:'Session Expired, Please login again.' } });
 }
 export const redirectToOrdersWithSuccessMessage = async (router) => {
-  router.replace({ pathname: "/orders", params: { message:'Payment Successfull, Thanks for placing order' } });
+  router.replace({ pathname: "/orders", params: { message:'Payment Successfull, Thanks for placing order!' } });
 }
 export const checkAccessToken = async (router) => {
   try {

@@ -4,9 +4,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import GlobalContext from '../GlobalContext';
 import { FlatList } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { StripeProvider } from "@stripe/stripe-react-native";
-import TestCheckout from '../components/PaymentButton';
 import PaymentButton from '../components/PaymentButton';
 
 export default function Checkout() {
@@ -69,7 +67,8 @@ export default function Checkout() {
                 </View>
           </View>
           <View style={{justifyContent:'space-between',paddingVertical:10,alignItems:'center'}}>
-              <Text style={{color:'#fff'}}>$ 300</Text>
+              <Text style={{color:'#fff'}}>$ 
+              {item.price*globals.cartItems.filter(cartItem => cartItem.id === item.id)[0].qty}</Text>
               <Pressable onPress={()=>
                 setGlobals({...globals,cartItems:globals.cartItems.filter(cartItem => cartItem.id !== item.id)})
               }>
@@ -87,9 +86,17 @@ export default function Checkout() {
       />) : <Text style={{color:'#fff'}}>No items in cart</Text>
   } ;
   const getSubTotal = () => {
-    return globals.cartItems.reduce((total,item)=>total+item.qty*item.price,0);
+    //if no cart items return 0
+    if(globals.cartItems.length === 0)
+      return 0;
+    //else return the sum of qty*price of each item fixed to 2 decimal places
+    return globals.cartItems.reduce((sum,item)=>sum+item.qty*item.price,0);
   }
   const getTax = () => {
+    //if no cart items return 0
+    if(globals.cartItems.length === 0)
+      return 0;
+
     return ((getSubTotal()+shippingCharge) * 0.13).toFixed(2);
   }
   const getTotal = () => {
@@ -134,7 +141,7 @@ export default function Checkout() {
                 <View style={{borderTopWidth:1,borderTopColor:'gray',paddingVertical:20}}>
                   <View style={{justifyContent:'space-between',flexDirection:'row'}}>
                     <Text style={{color:'#fff'}}>Subtotal</Text>
-                    <Text style={{color:'#fff'}}>${getSubTotal()}</Text>
+                    <Text style={{color:'#fff'}}>${getSubTotal().toFixed(2)}</Text>
                   </View>
                   <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:10}}>
                     <Text style={{color:'#fff'}}>Shipping</Text>
@@ -152,11 +159,11 @@ export default function Checkout() {
                
                 
           </View>
-          <View style={{flex:3}}>
+          {getSubTotal()!=0 && <View style={{flex:3}}>
           <StripeProvider publishableKey="pk_test_51MpIlIDYTDNtMFwaNHZ8W0ywBPcphtXCrYMO0A7nrcrTEkZImR4N7kQVsYNqkoNFPX5Ex6BkNTI4XZG3aBG8XOkZ00GVBBGcUf">
                 <PaymentButton amount={getTotal()}/>
           </StripeProvider>
-          </View>
+          </View>}
       </View>
     </View>
   )

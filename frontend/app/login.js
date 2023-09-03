@@ -45,7 +45,7 @@ export default function Login() {
       if(data.access_token){
         await AsyncStorage.setItem('access_token', data.access_token);
         setGlobals({...globals,username:data.username});
-        router.replace('/');
+        router.replace('/orders');
         return;
       }
       else 

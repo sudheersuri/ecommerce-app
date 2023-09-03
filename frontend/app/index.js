@@ -129,6 +129,7 @@ export default function Page() {
   };
   
   useEffect(() => {
+    
     checkAccessToken(router);
     fetchAddresses();
   }, []);
@@ -286,7 +287,8 @@ export default function Page() {
         <View style={{flexDirection:'row',alignItems:'center'}}>
           <Text style={{fontWeight:'bold',color:'#fff'}}>{globals.username && globals.username}</Text>
           <Pressable style={{ position: 'relative', borderRadius: 10 }}  onPress={() => {
-           getCartItemsCount()? router.push('/checkout'):'';
+          //  getCartItemsCount()? router.push('/orders'):'';
+          router.push('/orders');
             }} >
             <Ionicons name="cart" size={30} color="white"/>
               <View style={{ backgroundColor: '#FF6746', paddingHorizontal:5, position: 'absolute', top: -5, right: -5, borderRadius: 50 }}>

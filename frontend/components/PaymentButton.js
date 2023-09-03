@@ -1,15 +1,19 @@
 import { View, Text, TextInput, Button, Alert, Pressable, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStripe } from '@stripe/stripe-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { redirectToOrdersWithSuccessMessage, showToast } from '../functions';
+import GlobalContext from '../GlobalContext';
+import { useRouter } from 'expo-router';
 
 export default function PaymentButton({amount}) {
-    const stripe = useStripe();
+   const stripe = useStripe();
+   const { globals,setGlobals } = useContext(GlobalContext);
+   const router = useRouter();
+   const pay = async () => {
 
-const pay = async () => {
 
     try {
       const finalAmount = parseInt(amount);
@@ -24,11 +28,14 @@ const pay = async () => {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${access_token}`
         },
-        body: JSON.stringify({ amount: finalAmount }),
+        body: JSON.stringify({ 
+          amount: finalAmount,
+          shipping_address: globals.savedAddresses.filter((address)=>globals.shippingAddressId===address.id)[0],
+          items: globals.cartItems,
+        }),
       });
       const data = await response.json();
       if (!response.ok) {
-       
         showToast('error',data.message);
         return;
       }
@@ -46,7 +53,7 @@ const pay = async () => {
         showToast('error',presentSheet.error.message);
        
       }
-      redirectToOrdersWithSuccessMessage();
+      redirectToOrdersWithSuccessMessage(router);
     } catch (err) {
       showToast('error',err.message);
       return;
