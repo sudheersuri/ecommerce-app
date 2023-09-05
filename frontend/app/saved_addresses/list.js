@@ -12,7 +12,7 @@ export default function List() {
 
    const Header = () => {
         return (
-          <View style={{position:'relative', alignItems: 'center',borderBottomWidth:1,borderBottomColor:'gray',paddingBottom:20}}>
+          <View style={{position:'relative', alignItems: 'center',paddingBottom:20}}>
             <Ionicons name="chevron-back-outline" size={30} color="#fff" style={{position:'absolute',left:0}} onPress={() => router.back()} />
             <Text style={{ color:'#fff',marginTop:5,fontSize:18,fontWeight:'bold' }}>Saved Addresses</Text>
           </View>
@@ -21,10 +21,13 @@ export default function List() {
 
   const AddressItem = ({item}) => {
    
-   return (<Pressable  style={{flexDirection:"row",justifyContent:'space-between',alignItems:'center',borderBottomWidth:1,borderBottomColor:"gray",padding:10,backgroundColor:globals.shippingAddressId===item.id?'green':'transparent'}} onPress={() => setGlobals({...globals,shippingAddressId:item.id})}>
-      <View>
-        <Text style={{color:'#fff',fontWeight:'bold'}}>{item.nickname}</Text>
-        <Text style={{color:'#fff',marginTop:10}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
+   return (<Pressable  style={{flexDirection:"row",justifyContent:'space-between',alignItems:'center',borderBottomWidth:0, borderRadius:10,borderBottomColor:"gray",padding:10,backgroundColor:globals.shippingAddressId===item.id?'#1F1F1F':'transparent',paddingVertical:20}} onPress={() => setGlobals({...globals,shippingAddressId:item.id})}>
+      <View style={{flexDirection:'row',alignItems:'center'}}>
+        <Ionicons name="location" size={45} color="white" />
+        <View style={{marginLeft:5}}>
+          <Text style={{color:'#fff',fontWeight:'bold'}}>{item.nickname}</Text>
+          <Text style={{color:'#fff',marginTop:5}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
+        </View>
       </View>
       <Ionicons name="chevron-forward" size={24} color="white" />
     </Pressable>)

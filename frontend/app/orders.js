@@ -4,19 +4,47 @@ import { View, Text, FlatList, StyleSheet, Pressable, Modal, ScrollView, Image }
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
+import env from '../env';
+import { API_REQUEST, checkAccessToken, redirectToLoginWithSessionExpiredMessage, showToast } from '../functions';
+
+const REQUEST_URL = `${env.API_URL}/orders`;
 
 const OrdersScreen = () => {
   const router = useRouter();
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const fetchOrders = async () => {
+    try {
+      const response = await API_REQUEST(REQUEST_URL,'GET',null,true);
+      const data = await response.json();
+     
+      if(response.status===401)
+        redirectToLoginWithSessionExpiredMessage(router);
+      else if(response.status===200)
+      {
+        if(data.length) setOrders(data);
+      }
+      else 
+        showToast('error',data.message);
+    } catch (error) {
+      showToast('error',error);
+    }
+  };
+  useEffect(() => {
+    checkAccessToken();
+    fetchOrders();
+  }, []);
   const Header = () => {
     return (
-      <View style={{position:'relative', alignItems: 'center',borderBottomWidth:1,borderBottomColor:'gray',paddingBottom:20}}>
+      <View style={{position:'relative', alignItems: 'center',paddingBottom:20}}>
         <Ionicons name="chevron-back-outline" size={30} color="#fff" style={{position:'absolute',left:0}} onPress={() => router.back()} />
         <Text style={{ color:'#fff',marginTop:5,fontSize:18,fontWeight:'bold' }}>Orders</Text>
       </View>
     );
+  }
+  const get_shipping_address = () => {
+    return `${selectedOrder.shipping_address.address}, ${selectedOrder.shipping_address.city}, ${selectedOrder.shipping_address.state}, ${selectedOrder.shipping_address.zipcode}`;
   }
   const OrderDetailModal = () => {
     const OrderItem = ({item}) => {
@@ -33,9 +61,7 @@ const OrdersScreen = () => {
             </View>
         );
     }
-    const getshipping_address = () => {
-        return `${selectedOrder.shipping_address.address}, ${selectedOrder.shipping_address.city}, ${selectedOrder.shipping_address.state}, ${selectedOrder.shipping_address.zipcode}`;
-    }
+  
     return (
         <View style={styles.centeredView}>
           <Modal
@@ -50,7 +76,7 @@ const OrdersScreen = () => {
               <View style={styles.modalView}>
                 <View style={{flexDirection:'row',width:'100%',justifyContent:'space-between'}}>
                         <View>
-                        <Text style={{color:'#fff',fontWeight:'bold'}}>Order#: 211e12312</Text>
+                        <Text style={{color:'#fff',fontWeight:'bold'}}>Order# 211e12312</Text>
                         </View>
                         <Pressable
                             onPress={() => setModalVisible(!modalVisible)}>
@@ -67,7 +93,7 @@ const OrdersScreen = () => {
                     <View>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
                              <Ionicons name="location" size={20} color="#fff" />
-                             <Text style={{color:'#fff'}}>{getshipping_address()}</Text>
+                             <Text style={{color:'#fff'}}>{get_shipping_address()}</Text>
                         </View>
                     </View>    
                     <Text style={{color:'#fff',fontSize:20,fontWeight:'bold'}}>$12.31</Text>
@@ -78,29 +104,6 @@ const OrdersScreen = () => {
           </Modal>
         </View>);
   }
-  useEffect(() => {
-    
-    const fetchOrders = async () => {
-      try {
-        const access_token = await AsyncStorage.getItem('access_token');
-        const response = await fetch('http://127.0.0.1:5000/orders', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        setOrders(data);
-      } catch (error) {
-        console.error('Fetch error:', error);
-      }
-    };
-
-    fetchOrders();
-  }, []);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.orderItem} onPress={()=>{
@@ -108,7 +111,7 @@ const OrdersScreen = () => {
         setModalVisible(true);
     }}>
       <View>
-            <Text style={{color:'#fff',fontWeight:'bold'}}>Order#: 1212312312</Text>
+            <Text style={{color:'#fff',fontWeight:'bold'}}>Order# {1212312312}</Text>
             <Text style={{color:'#fff',opacity:0.7,marginTop:5}}>20th Dec 2019, 3:00 pm</Text>
             <Text style={{color:'green',marginTop:10}}>Delivery by <Text style={{fontWeight:'bold'}}>21st Jan 2020</Text></Text>
       </View>
@@ -124,13 +127,15 @@ const OrdersScreen = () => {
   return (
     <View style={styles.container}>
       <Header />
-      <FlatList
+      {orders.length ?  <FlatList
         data={orders}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.orderList}
         style={{marginTop:5}}
-      />
+      />:(<View style={{justifyContent:'center',alignItems:'center'}}>
+          <Text style={{color:'#fff',textAlign:'center',marginTop:50}}>No orders found</Text>
+      </View>)}
       {selectedOrder && <OrderDetailModal />}
     </View>
   );
@@ -142,13 +147,16 @@ const styles = StyleSheet.create({
         backgroundColor: "#000",
         paddingTop: 40,
         paddingHorizontal: 15,
+       
   },
   orderList: {
     paddingBottom: 16,
   },
   orderItem: {
-    backgroundColor: '#333', // Dark gray background for each order item
-    padding: 16,
+    borderBottomColor: 'gray',
+    borderBottomWidth:0.4,
+    paddingVertical: 16,
+    paddingHorizontal: 5,
     marginBottom: 16,
     borderRadius: 8,
     flexDirection:'row',
@@ -162,6 +170,7 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     marginTop: 250,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   modalView: {
     margin: 20,
@@ -170,6 +179,7 @@ const styles = StyleSheet.create({
     borderColor:'#fff',
     borderWidth:1,
     padding: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {

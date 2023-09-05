@@ -7,13 +7,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import GlobalContext from '../GlobalContext';
 import env from '../env';
 import { API_REQUEST, checkAccessToken, redirectToLoginWithSessionExpiredMessage, showToast } from '../functions';
+import Menu from '../components/Menu';
+import Sidebar from '../components/Sidebar';
 
 const screenWidth = Dimensions.get('window').width;
 const numColumns = 2;
 
-export default function Page() {
+export default function Home({navigation}) {
   const {globals,setGlobals}= useContext(GlobalContext);
- 
+  
   const categories = [
     { id: 1, name: 'New Arrivals' },
     { id: 2, name: 'Shoes' },
@@ -240,7 +242,7 @@ export default function Page() {
     );
   
     return (
-      <View style={{height:40,marginTop:10,paddingHorizontal: 15,}}>
+      <View style={{height:40,marginTop:10,paddingHorizontal: 15,zIndex:-1}}>
       <FlatList
         horizontal
         data={categories}
@@ -281,20 +283,21 @@ export default function Page() {
     return (
       <View style={styles.header}>
         <View style={{flexDirection:'row',alignItems:'center'}}>
-         <Ionicons name="menu" size={30} color="white" onPress={() => router.goBack()} />
+         <Menu />
+         
          <Text style={styles.companyName}>Shopper</Text>
         </View>
         <View style={{flexDirection:'row',alignItems:'center'}}>
           <Text style={{fontWeight:'bold',color:'#fff'}}>{globals.username && globals.username}</Text>
           <Pressable style={{ position: 'relative', borderRadius: 10 }}  onPress={() => {
-          //  getCartItemsCount()? router.push('/orders'):'';
-          router.push('/orders');
+           getCartItemsCount()? router.push('/checkout'):'';
             }} >
             <Ionicons name="cart" size={30} color="white"/>
               <View style={{ backgroundColor: '#FF6746', paddingHorizontal:5, position: 'absolute', top: -5, right: -5, borderRadius: 50 }}>
                 <Text style={{ color: '#fff', fontWeight:"bold" }}>{getCartItemsCount()}</Text>
               </View>
           </Pressable>
+         
         </View>
       </View>
     );
@@ -302,6 +305,7 @@ export default function Page() {
   return <>
   <View style={styles.container}>
           <Header /> 
+          <Sidebar />
           <CategoryList />
           <SearchBar />
           <ProductList />
@@ -329,7 +333,8 @@ const styles = StyleSheet.create({
   companyName:{
     color:'#fff',
     fontWeight:'bold',
-    fontSize:20
+    fontSize:20,
+    marginLeft:30
   },
   category: {
     height:30,
