@@ -1,0 +1,282 @@
+[
+    {
+        "name": "Men 1",
+        "price": 19.99,
+        "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-PNG-Image-Background.png",
+        "description": "This is the description for Product 1.",
+        "categoryId": "64f7e3e0160105e1c23b0b50"
+    },
+    {
+        "name": "Men 2",
+        "price": 29.99,
+        "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-PNG-Image-Background.png",
+        "description": "This is the description for Product 2.",
+        "categoryId": "64f7e3e0160105e1c23b0b50"
+    },
+    {
+        "name": "Men 3",
+        "price": 9.99,
+        "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-PNG-Image-Background.png",
+        "description": "This is the description for Product 3.",
+        "categoryId": "64f7e3e0160105e1c23b0b50"
+    },
+    {
+        "name": "Men 4",
+        "price": 39.99,
+        "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-PNG-Image-Background.png",
+        "description": "This is the description for Product 4.",
+        "categoryId": "64f7e3e0160105e1c23b0b50"
+    },
+    {
+        "name": "Men 5",
+        "price": 49.99,
+        "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-PNG-Image-Background.png",
+        "description": "This is the description for Product 5.",
+        "categoryId": "64f7e3e0160105e1c23b0b50"
+    },
+    {
+        "name": "Men 6",
+        "price": 14.99,
+        "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-PNG-Image-Background.png",
+        "description": "This is the description for Product 6.",
+        "categoryId": "64f7e3e0160105e1c23b0b50"
+    },
+    {
+        "name": "Men 7",
+        "price": 24.99,
+        "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-PNG-Image-Background.png",
+        "description": "This is the description for Product 7.",
+        "categoryId": "64f7e3e0160105e1c23b0b50"
+    },
+    {
+        "name": "Men 8",
+        "price": 34.99,
+        "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-PNG-Image-Background.png",
+        "description": "This is the description for Product 8.",
+        "categoryId": "64f7e3e0160105e1c23b0b50"
+    },
+        {
+            "name": "Women 1",
+            "price": 19.99,
+            "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-Transparent-Image.png",
+            "description": "This is the description for Product 1.",
+            "categoryId": "64f7e3e1160105e1c23b0b51"
+        },
+        {
+            "name": "Women 2",
+            "price": 29.99,
+            "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-Transparent-Image.png",
+            "description": "This is the description for Product 2.",
+            "categoryId": "64f7e3e1160105e1c23b0b51"
+        },
+        {
+            "name": "Women 3",
+            "price": 9.99,
+            "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-Transparent-Image.png",
+            "description": "This is the description for Product 3.",
+            "categoryId": "64f7e3e1160105e1c23b0b51"
+        },
+        {
+            "name": "Women 4",
+            "price": 39.99,
+            "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-Transparent-Image.png",
+            "description": "This is the description for Product 4.",
+            "categoryId": "64f7e3e1160105e1c23b0b51"
+        },
+        {
+            "name": "Women 5",
+            "price": 49.99,
+            "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-Transparent-Image.png",
+            "description": "This is the description for Product 5.",
+            "categoryId": "64f7e3e1160105e1c23b0b51"
+        },
+        {
+            "name": "Women 6",
+            "price": 14.99,
+            "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-Transparent-Image.png",
+            "description": "This is the description for Product 6.",
+            "categoryId": "64f7e3e1160105e1c23b0b51"
+        },
+        {
+            "name": "Women 7",
+            "price": 24.99,
+            "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-Transparent-Image.png",
+            "description": "This is the description for Product 7.",
+            "categoryId": "64f7e3e1160105e1c23b0b51"
+        },
+        {
+            "name": "Women 8",
+            "price": 34.99,
+            "imageURL": "https://www.pngarts.com/files/5/Plain-Pink-T-Shirt-Transparent-Image.png",
+            "description": "This is the description for Product 8.",
+            "categoryId": "64f7e3e1160105e1c23b0b51"
+        },
+            {
+                "name": "Kids 1",
+                "price": 19.99,
+                "imageURL": "https://static.vecteezy.com/system/resources/previews/011/018/672/original/pink-kids-t-shirt-mockup-short-sleeve-transparent-background-free-png.png",
+                "description": "This is the description for Product 1.",
+                "categoryId": "64f7e3e1160105e1c23b0b52"
+            },
+            {
+                "name": "Kids 2",
+                "price": 29.99,
+                "imageURL": "https://static.vecteezy.com/system/resources/previews/011/018/672/original/pink-kids-t-shirt-mockup-short-sleeve-transparent-background-free-png.png",
+                "description": "This is the description for Product 2.",
+                "categoryId": "64f7e3e1160105e1c23b0b52"
+            },
+            {
+                "name": "Kids 3",
+                "price": 9.99,
+                "imageURL": "https://static.vecteezy.com/system/resources/previews/011/018/672/original/pink-kids-t-shirt-mockup-short-sleeve-transparent-background-free-png.png",
+                "description": "This is the description for Product 3.",
+                "categoryId": "64f7e3e1160105e1c23b0b52"
+            },
+            {
+                "name": "Kids 4",
+                "price": 39.99,
+                "imageURL": "https://static.vecteezy.com/system/resources/previews/011/018/672/original/pink-kids-t-shirt-mockup-short-sleeve-transparent-background-free-png.png",
+                "description": "This is the description for Product 4.",
+                "categoryId": "64f7e3e1160105e1c23b0b52"
+            },
+            {
+                "name": "Kids 5",
+                "price": 49.99,
+                "imageURL": "https://static.vecteezy.com/system/resources/previews/011/018/672/original/pink-kids-t-shirt-mockup-short-sleeve-transparent-background-free-png.png",
+                "description": "This is the description for Product 5.",
+                "categoryId": "64f7e3e1160105e1c23b0b52"
+            },
+            {
+                "name": "Kids 6",
+                "price": 14.99,
+                "imageURL": "https://static.vecteezy.com/system/resources/previews/011/018/672/original/pink-kids-t-shirt-mockup-short-sleeve-transparent-background-free-png.png",
+                "description": "This is the description for Product 6.",
+                "categoryId": "64f7e3e1160105e1c23b0b52"
+            },
+            {
+                "name": "Kids 7",
+                "price": 24.99,
+                "imageURL": "https://static.vecteezy.com/system/resources/previews/011/018/672/original/pink-kids-t-shirt-mockup-short-sleeve-transparent-background-free-png.png",
+                "description": "This is the description for Product 7.",
+                "categoryId": "64f7e3e1160105e1c23b0b52"
+            },
+            {
+                "name": "Kids 8",
+                "price": 34.99,
+                "imageURL": "https://static.vecteezy.com/system/resources/previews/011/018/672/original/pink-kids-t-shirt-mockup-short-sleeve-transparent-background-free-png.png",
+                "description": "This is the description for Product 8.",
+                "categoryId": "64f7e3e1160105e1c23b0b52"
+            },
+                {
+                    "name": "Handbag 1",
+                    "price": 19.99,
+                    "imageURL": "https://www.transparentpng.com/thumb/women-bag/5n1fgv-red-textured-women-bag-png.png",
+                    "description": "This is the description for Product 1.",
+                    "categoryId": "64f7e3e2160105e1c23b0b53"
+                },
+                {
+                    "name": "Handbag 2",
+                    "price": 29.99,
+                    "imageURL": "https://www.transparentpng.com/thumb/women-bag/5n1fgv-red-textured-women-bag-png.png",
+                    "description": "This is the description for Product 2.",
+                    "categoryId": "64f7e3e2160105e1c23b0b53"
+                },
+                {
+                    "name": "Handbag 3",
+                    "price": 9.99,
+                    "imageURL": "https://www.transparentpng.com/thumb/women-bag/5n1fgv-red-textured-women-bag-png.png",
+                    "description": "This is the description for Product 3.",
+                    "categoryId": "64f7e3e2160105e1c23b0b53"
+                },
+                {
+                    "name": "Handbag 4",
+                    "price": 39.99,
+                    "imageURL": "https://www.transparentpng.com/thumb/women-bag/5n1fgv-red-textured-women-bag-png.png",
+                    "description": "This is the description for Product 4.",
+                    "categoryId": "64f7e3e2160105e1c23b0b53"
+                },
+                {
+                    "name": "Handbag 5",
+                    "price": 49.99,
+                    "imageURL": "https://www.transparentpng.com/thumb/women-bag/5n1fgv-red-textured-women-bag-png.png",
+                    "description": "This is the description for Product 5.",
+                    "categoryId": "64f7e3e2160105e1c23b0b53"
+                },
+                {
+                    "name": "Handbag 6",
+                    "price": 14.99,
+                    "imageURL": "https://www.transparentpng.com/thumb/women-bag/5n1fgv-red-textured-women-bag-png.png",
+                    "description": "This is the description for Product 6.",
+                    "categoryId": "64f7e3e2160105e1c23b0b53"
+                },
+                {
+                    "name": "Handbag 7",
+                    "price": 24.99,
+                    "imageURL": "https://www.transparentpng.com/thumb/women-bag/5n1fgv-red-textured-women-bag-png.png",
+                    "description": "This is the description for Product 7.",
+                    "categoryId": "64f7e3e2160105e1c23b0b53"
+                },
+                {
+                    "name": "Handbag 8",
+                    "price": 34.99,
+                    "imageURL": "https://www.transparentpng.com/thumb/women-bag/5n1fgv-red-textured-women-bag-png.png",
+                    "description": "This is the description for Product 8.",
+                    "categoryId": "64f7e3e2160105e1c23b0b53"
+                },
+                {
+                    "name": "Shoes 1",
+                    "price": 19.99,
+                    "imageURL": "https://www.pngall.com/wp-content/uploads/2/White-Sneakers-PNG-Clipart.png",
+                    "description": "This is the description for Product 1.",
+                    "categoryId": "64f7e3e3160105e1c23b0b54"
+                },
+                {
+                    "name": "Shoes 2",
+                    "price": 29.99,
+                    "imageURL": "https://www.pngall.com/wp-content/uploads/2/White-Sneakers-PNG-Clipart.png",
+                    "description": "This is the description for Product 2.",
+                    "categoryId": "64f7e3e3160105e1c23b0b54"
+                },
+                {
+                    "name": "Shoes 3",
+                    "price": 9.99,
+                    "imageURL": "https://www.pngall.com/wp-content/uploads/2/White-Sneakers-PNG-Clipart.png",
+                    "description": "This is the description for Product 3.",
+                    "categoryId": "64f7e3e3160105e1c23b0b54"
+                },
+                {
+                    "name": "Shoes 4",
+                    "price": 39.99,
+                    "imageURL": "https://www.pngall.com/wp-content/uploads/2/White-Sneakers-PNG-Clipart.png",
+                    "description": "This is the description for Product 4.",
+                    "categoryId": "64f7e3e3160105e1c23b0b54"
+                },
+                {
+                    "name": "Shoes 5",
+                    "price": 49.99,
+                    "imageURL": "https://www.pngall.com/wp-content/uploads/2/White-Sneakers-PNG-Clipart.png",
+                    "description": "This is the description for Product 5.",
+                    "categoryId": "64f7e3e3160105e1c23b0b54"
+                },
+                {
+                    "name": "Shoes 6",
+                    "price": 14.99,
+                    "imageURL": "https://www.pngall.com/wp-content/uploads/2/White-Sneakers-PNG-Clipart.png",
+                    "description": "This is the description for Product 6.",
+                    "categoryId": "64f7e3e3160105e1c23b0b54"
+                },
+                {
+                    "name": "Shoes 7",
+                    "price": 24.99,
+                    "imageURL": "https://www.pngall.com/wp-content/uploads/2/White-Sneakers-PNG-Clipart.png",
+                    "description": "This is the description for Product 7.",
+                    "categoryId": "64f7e3e3160105e1c23b0b54"
+                },
+                {
+                    "name": "Shoes 8",
+                    "price": 34.99,
+                    "imageURL": "https://www.pngall.com/wp-content/uploads/2/White-Sneakers-PNG-Clipart.png",
+                    "description": "This is the description for Product 8.",
+                    "categoryId": "64f7e3e3160105e1c23b0b54"
+                }
+]

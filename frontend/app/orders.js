@@ -23,6 +23,7 @@ const OrdersScreen = () => {
         redirectToLoginWithSessionExpiredMessage(router);
       else if(response.status===200)
       {
+        console.log(data);
         if(data.length) setOrders(data);
       }
       else 
@@ -76,7 +77,7 @@ const OrdersScreen = () => {
               <View style={styles.modalView}>
                 <View style={{flexDirection:'row',width:'100%',justifyContent:'space-between'}}>
                         <View>
-                        <Text style={{color:'#fff',fontWeight:'bold'}}>Order# 211e12312</Text>
+                        <Text style={{color:'#fff',fontWeight:'bold'}}>Order# {selectedOrder.id.toUpperCase().slice(5,13)}</Text>
                         </View>
                         <Pressable
                             onPress={() => setModalVisible(!modalVisible)}>
@@ -96,7 +97,7 @@ const OrdersScreen = () => {
                              <Text style={{color:'#fff'}}>{get_shipping_address()}</Text>
                         </View>
                     </View>    
-                    <Text style={{color:'#fff',fontSize:20,fontWeight:'bold'}}>$12.31</Text>
+                    <Text style={{color:'#fff',fontSize:20,fontWeight:'bold'}}>${selectedOrder.total}</Text>
                 </View>
               </View>
               
@@ -111,13 +112,13 @@ const OrdersScreen = () => {
         setModalVisible(true);
     }}>
       <View>
-            <Text style={{color:'#fff',fontWeight:'bold'}}>Order# {1212312312}</Text>
+            <Text style={{color:'#fff',fontWeight:'bold'}}>Order# {item.id.slice(5,13).toUpperCase()}</Text>
             <Text style={{color:'#fff',opacity:0.7,marginTop:5}}>20th Dec 2019, 3:00 pm</Text>
             <Text style={{color:'green',marginTop:10}}>Delivery by <Text style={{fontWeight:'bold'}}>21st Jan 2020</Text></Text>
       </View>
       <View style={{justifyContent:'justify-between',height:'100%',alignItems:'flex-end'}}>
         <Text style={{color:'#fff',fontWeight:'bold',fontSize:18}}>
-                $300
+                ${item.total}
         </Text>
         <Text style={{color:'#fff',marginTop:22}}>View</Text>
       </View>
@@ -170,25 +171,17 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     marginTop: 250,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+  
   },
   modalView: {
-    margin: 20,
     backgroundColor: '#000',
     borderRadius: 5,
-    borderColor:'#fff',
+    borderColor:'gray',
+    margin:20,
     borderWidth:1,
     padding: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
   button: {
     borderRadius: 20,

@@ -159,7 +159,7 @@ def get_orders():
     current_user_id = get_jwt_identity()
     try:
         # Query the 'addresses' collection for addresses associated with the user ID
-        orders = mongo.db.orders.find({'user_id': current_user_id}, {"_id": 0})
+        orders = mongo.db.orders.find({'user_id': current_user_id})
 
         # Convert the cursor to a list of dictionaries
         orders_list = list(orders)
@@ -180,6 +180,114 @@ def calculate_total_amount(items):
     # You may adjust this logic based on your product pricing
     total = sum(item['price'] * item['quantity'] for item in items)
     return int(total * 100)  # Convert to cents
+
+# Endpoint to add/update/get categories
+@app.route('/categories', methods=['GET', 'PUT'])
+@jwt_required()
+def categories():
+    if request.method == 'GET':
+        categories = list(mongo.db.categories.find({}, {'_id': 1, 'name': 1}))
+        # Use dumps to convert MongoDB documents to JSON-serializable format
+
+        # Convert ObjectId to string in each document
+        for category in categories:
+            category['id'] = str(category.pop('_id', None))
+
+        serialized_categories = dumps(categories)
+        return serialized_categories, 200
+    elif request.method == 'PUT':
+        try:
+            data = request.get_json()
+            
+            if not isinstance(data, list):
+                return jsonify({'message': 'Invalid input format!'}), 400
+
+            for item in data:
+                category_id = item.get('id')
+                category_name = item.get('name')
+
+                if not category_name:
+                    return jsonify({'message': 'Category name is required!'}), 400
+
+                existing_category = mongo.db.categories.find_one({'name': category_name})
+
+                if existing_category and existing_category['_id'] != ObjectId(category_id):
+                    return jsonify({'message': 'Category with the same name already exists!'}), 400
+
+                if category_id:
+                    mongo.db.categories.update_one({'_id': ObjectId(category_id)}, {'$set': {'name': category_name}})
+                else:
+                    new_category = {'name': category_name}
+                    mongo.db.categories.insert_one(new_category)
+
+            return jsonify({'message': 'Categories added/updated successfully!'}), 200
+
+        except Exception as e:
+            return jsonify({'message': str(e)}), 500
+
+
+# Endpoint to add/update/get products
+@app.route('/products', methods=['GET', 'PUT'])
+@jwt_required()
+def products():
+    if request.method == 'GET':
+        products = list(mongo.db.products.find({}, {'_id': 1, 'name': 1, 'desc': 1, 'price': 1, 'categoryId': 1, 'imageURL': 1}))
+       
+        # Convert ObjectId to string in each document
+        for product in products:
+            product['id'] = str(product.pop('_id', None))
+
+        # Use dumps to convert MongoDB documents to JSON-serializable format
+        serialized_products = dumps(products)
+    
+        return serialized_products, 200
+    elif request.method == 'PUT':
+        try:
+            data = request.get_json()
+            
+            if not isinstance(data, list):
+                return jsonify({'message': 'Invalid input format!'}), 400
+
+            for item in data:
+                product_id = item.get('id')
+                product_name = item.get('name')
+                product_desc = item.get('description')
+                product_price = item.get('price')
+                product_category_id = item.get('categoryId')
+                product_image_url = item.get('imageURL')
+
+                if not product_name or not product_desc or not product_price or not product_category_id:
+                    return jsonify({'message': 'Product name, description, price, and categoryId are required!'}), 400
+
+                existing_product = mongo.db.products.find_one({'name': product_name})
+
+                if existing_product and existing_product['_id'] != ObjectId(product_id):
+                    return jsonify({'message': 'Product with the same name already exists!'}), 400
+
+                if product_id:
+                    mongo.db.products.update_one({'_id': ObjectId(product_id)}, {
+                        '$set': {
+                            'name': product_name,
+                            'desc': product_desc,
+                            'price': product_price,
+                            'categoryId': product_category_id,
+                            'imageURL': product_image_url
+                        }
+                    })
+                else:
+                    new_product = {
+                        'name': product_name,
+                        'desc': product_desc,
+                        'price': product_price,
+                        'categoryId': product_category_id,
+                        'imageURL': product_image_url
+                    }
+                    mongo.db.products.insert_one(new_product)
+
+            return jsonify({'message': 'Products added/updated successfully!'}), 200
+
+        except Exception as e:
+            return jsonify({'message': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

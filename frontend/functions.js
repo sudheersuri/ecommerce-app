@@ -12,7 +12,7 @@ export const showToast = (type, message) => {
 
 export const API_REQUEST = async (url,method,data=null,authorized=false) => {
     try {
-        console.log(authorized);
+       
         const accessToken = authorized ? await AsyncStorage.getItem('access_token') : '';
       
         const response = await fetch(url, {
