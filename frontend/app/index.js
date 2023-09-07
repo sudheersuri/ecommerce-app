@@ -9,10 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import GlobalContext from "../GlobalContext";
 import env from "../env";
 import {
   API_REQUEST,
@@ -22,15 +21,17 @@ import {
 } from "../functions";
 import Menu from "../components/Menu";
 import Sidebar from "../components/Sidebar";
+import useGlobalStore from "./useGlobalStore";
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
 
 export default function Home({ navigation }) {
-  const { globals, setGlobals } = useContext(GlobalContext);
+  const{globals,setGlobals} = useGlobalStore();
   const router = useRouter();
   const [categories,setCategories]= useState([]);
   const [products,setProducts]= useState([]);
+  const inputEl = useRef(null);
 
   const fetchCategories = async () => {
     try {
@@ -81,9 +82,13 @@ export default function Home({ navigation }) {
       else if (response.status === 200) {
         if (data.length)
         {
-          setGlobals(prevGlobals=>{
-            return {...prevGlobals,savedAddresses:data,shippingAddressId:data[0].id}
-          })
+         
+          setGlobals({
+            ...globals,
+            savedAddresses: data,
+            shippingAddressId: data[0].id,
+          });
+         
         }
       } else showToast("error", data.message);
     } catch (error) {
@@ -91,22 +96,15 @@ export default function Home({ navigation }) {
     }
   };
   const fetchData = async () => {
+    await fetchAddresses();
     await fetchCategories();
     await fetchProducts();
-   
   };
 
   useEffect(() => {
     checkAccessToken(router);
-    if(!categories.length && !products.length)
-    { 
-      fetchAddresses();
-      fetchData();
-     
-      
-    }
-   
-  }, [products,categories]);
+    fetchData();
+  }, []);
   const QtySelector = ({ item }) => {
     const { cartItems } = globals;
 
@@ -299,7 +297,7 @@ export default function Home({ navigation }) {
             placeholder="Search..."
             placeholderTextColor={"gray"}
             defaultValue={searchText}
-            onChangeText={(text) => setSearchText(text)}
+            ref={inputEl}
           />
         </View>
         {searchText && (
@@ -316,6 +314,7 @@ export default function Home({ navigation }) {
     );
   };
   const getCartItemsCount = () => {
+    if(!globals.cartItems?.length) return 0;
     return globals.cartItems.reduce(
       (totalCount, cartItem) => totalCount + cartItem.qty,
       0

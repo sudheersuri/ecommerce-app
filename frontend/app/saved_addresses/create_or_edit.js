@@ -6,7 +6,7 @@ import {
     Pressable,
     ActivityIndicator,
   } from "react-native";
-  import React, { useContext, useEffect, useState } from "react";
+  import React, {  useEffect, useState } from "react";
   import Ionicons from "@expo/vector-icons/Ionicons";
   import { Controller, useForm } from "react-hook-form";
   import { useLocalSearchParams, useRouter } from "expo-router";
@@ -14,16 +14,17 @@ import {
   import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
-import GlobalContext from "../../GlobalContext";
+
 import { checkAccessToken, showToast } from "../../functions";
 import env from "../../env";
+import useGlobalStore from "../useGlobalStore";
 
 
 const REQUEST_URL = `${env.API_URL}/save_address`;
 export default function Page() {
     const [loading,setLoading] = useState(false);
     const router = useRouter();
-    const {globals,setGlobals} = useContext(GlobalContext);
+    const{globals,setGlobals} = useGlobalStore();
     const params = useLocalSearchParams();
     useEffect(() => {
       checkAccessToken(router);

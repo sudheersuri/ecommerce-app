@@ -6,16 +6,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Toast from 'react-native-toast-message';
-import {  useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { SocialMediaButton } from "../components/SocialMediaButton";
-import GlobalContext from "../GlobalContext";
+
 import { API_REQUEST, showToast } from "../functions";
 import env from '../env';
+import useGlobalStore from "./useGlobalStore";
 
 const REQUEST_URL = `${env.API_URL}/login`;
 
 export default function Login() {
-  const {globals,setGlobals}= useContext(GlobalContext);
+  const{globals,setGlobals} = useGlobalStore();
   const {theme} = globals;
   const [loading,setLoading] = useState(false);
   const params = useLocalSearchParams();

@@ -23,7 +23,6 @@ const OrdersScreen = () => {
         redirectToLoginWithSessionExpiredMessage(router);
       else if(response.status===200)
       {
-        console.log(data);
         if(data.length) setOrders(data);
       }
       else 

@@ -1,16 +1,16 @@
 import { View, Text, TextInput, Button, Alert, Pressable, StyleSheet } from 'react-native'
-import React, { useContext, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStripe } from '@stripe/stripe-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { redirectToOrdersWithSuccessMessage, showToast } from '../functions';
-import GlobalContext from '../GlobalContext';
+
 import { useRouter } from 'expo-router';
+import useGlobalStore from '../app/useGlobalStore';
 
 export default function PaymentButton({amount}) {
    const stripe = useStripe();
-   const { globals,setGlobals } = useContext(GlobalContext);
+   const{globals,setGlobals} = useGlobalStore();
    const router = useRouter();
    const pay = async () => {
 

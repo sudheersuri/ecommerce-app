@@ -1,11 +1,12 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import React, { useContext } from "react";
+import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import GlobalContext from "../GlobalContext";
+
 import { useRouter } from "expo-router";
+import useGlobalStore from "../app/useGlobalStore";
 
 export default function Sidebar() {
-  const { globals, setGlobals } = useContext(GlobalContext);
+  const{globals,setGlobals} = useGlobalStore();
   const router = useRouter();
   return (
     globals.showSideBar && (

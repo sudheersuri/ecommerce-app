@@ -1,16 +1,18 @@
 import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import GlobalContext from '../../GlobalContext';
+
 import { checkAccessToken } from '../../functions';
+import useGlobalStore from '../useGlobalStore';
 
 
 export default function List() {
    const router = useRouter();
-   const {globals,setGlobals} = useContext(GlobalContext);
+   const{globals,setGlobals} = useGlobalStore();
    useEffect(() => {
+    console.log(globals);
     checkAccessToken(router);
   }, []);
    const params = useLocalSearchParams();
@@ -29,14 +31,16 @@ export default function List() {
       onPress={() => {
         params?.selectionMode?router.push({pathname:'/saved_addresses/create_or_edit',params:{...item}}) :setGlobals({...globals,shippingAddressId:item.id})
       }}>
-      <View style={{flexDirection:'row',alignItems:'center'}}>
+      <View style={{flexDirection:'row',alignItems:'center',flex:8}}>
         <Ionicons name="location" size={45} color="white" />
         <View style={{marginLeft:5}}>
           <Text style={{color:'#fff',fontWeight:'bold'}}>{item.nickname}</Text>
-          <Text style={{color:'#fff',marginTop:5,width:'96%'}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
+          <Text style={{color:'#fff',marginTop:5,width:params.selectionMode?"98%":"100%"}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
         </View>
       </View>
-      {params?.selectionMode ? <Ionicons name="create-outline" size={24} color="white" />:<Ionicons name="chevron-forward" size={24} color="white" />}
+      <View style={{flex:1}}>
+      {params?.selectionMode ? <Ionicons name="create-outline" size={24} color="white" />:null}
+      </View>
     </Pressable>)
   }
   return (

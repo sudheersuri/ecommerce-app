@@ -1,14 +1,15 @@
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
-import React, { useContext } from 'react'
+import React from 'react'
 import Ionicons from "@expo/vector-icons/Ionicons";
-import GlobalContext from '../GlobalContext';
+
 import { FlatList } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 import { StripeProvider } from "@stripe/stripe-react-native";
 import PaymentButton from '../components/PaymentButton';
+import useGlobalStore from './useGlobalStore';
 
 export default function Checkout() {
-  const{globals,setGlobals} = useContext(GlobalContext);
+  const{globals,setGlobals} = useGlobalStore();
   const router = useRouter();
   const shippingCharge = 5;
   const Header = () => {
