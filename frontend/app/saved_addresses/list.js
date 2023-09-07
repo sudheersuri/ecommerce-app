@@ -4,16 +4,39 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { checkAccessToken } from '../../functions';
+import { API_REQUEST, checkAccessToken, redirectToLoginWithSessionExpiredMessage, showToast } from '../../functions';
 import useGlobalStore from '../useGlobalStore';
+import env from '../../env';
 
 
 export default function List() {
    const router = useRouter();
    const{globals,setGlobals} = useGlobalStore();
+   const fetchAddresses = async () => {
+    try {
+      const REQUEST_URL = `${env.API_URL}/get_addresses`;
+      const response = await API_REQUEST(REQUEST_URL, "GET", null, true);
+      const data = await response.json();
+
+      if (response.status === 401)
+        redirectToLoginWithSessionExpiredMessage(router);
+      else if (response.status === 200) {
+        if (data.length)
+        {
+          setGlobals({
+            ...globals,
+            savedAddresses: data,
+            shippingAddressId: data[0].id,
+          });
+        }
+      } else showToast("error", data.message);
+    } catch (error) {
+      showToast("error", error);
+    }
+  };
    useEffect(() => {
-    console.log(globals);
     checkAccessToken(router);
+    fetchAddresses();
   }, []);
    const params = useLocalSearchParams();
    const Header = () => {

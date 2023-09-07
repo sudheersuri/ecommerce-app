@@ -4,10 +4,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { useRouter } from "expo-router";
 import useGlobalStore from "../app/useGlobalStore";
+import { logout } from "../functions";
 
 export default function Sidebar() {
   const{globals,setGlobals} = useGlobalStore();
   const router = useRouter();
+  
   return (
     globals.showSideBar && (
       <View style={styles.container}>
@@ -52,6 +54,19 @@ export default function Sidebar() {
             Saved Addresses
           </Text>
         </Pressable>
+        <Pressable
+          style={{flexDirection:'row',alignItems:'center', marginTop: 30}}
+          onPress={() => {
+            setGlobals({ ...globals, showSideBar: false });
+            logout(router);
+          }}
+        >
+          <Ionicons name="log-out" size={20} color="gray" />
+          <Text style={{ color: "#fff", fontSize: 18,marginLeft:10 }}>
+            Logout
+          </Text>
+        </Pressable>
+
       </View>
     )
   );

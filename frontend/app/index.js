@@ -31,7 +31,7 @@ export default function Home({ navigation }) {
   const router = useRouter();
   const [categories,setCategories]= useState([]);
   const [products,setProducts]= useState([]);
-  const inputEl = useRef(null);
+
 
   const fetchCategories = async () => {
     try {
@@ -40,16 +40,24 @@ export default function Home({ navigation }) {
       const data = await response.json();
 
       if (response.status === 401)
+      {
         redirectToLoginWithSessionExpiredMessage(router);
+        return;
+      }
       else if (response.status === 200) {
         if (data.length)
         {
-         setCategories(data);
-         setGlobals({...globals,selectedCategory:data[0].id});
+          setCategories(data);
+          setGlobals({
+            ...globals,
+            selectedCategory: data[0].id,
+          });
         }
+         
       } else showToast("error", data.message);
     } catch (error) {
       showToast("error", error);
+      return;
     }
   };
   const fetchProducts = async () => {
@@ -71,39 +79,18 @@ export default function Home({ navigation }) {
       showToast("error", error);
     }
   };
-  const fetchAddresses = async () => {
-    try {
-      const REQUEST_URL = `${env.API_URL}/get_addresses`;
-      const response = await API_REQUEST(REQUEST_URL, "GET", null, true);
-      const data = await response.json();
-
-      if (response.status === 401)
-        redirectToLoginWithSessionExpiredMessage(router);
-      else if (response.status === 200) {
-        if (data.length)
-        {
-         
-          setGlobals({
-            ...globals,
-            savedAddresses: data,
-            shippingAddressId: data[0].id,
-          });
-         
-        }
-      } else showToast("error", data.message);
-    } catch (error) {
-      showToast("error", error);
-    }
-  };
+ 
   const fetchData = async () => {
-    await fetchAddresses();
-    await fetchCategories();
-    await fetchProducts();
+    if(!products.length && !categories.length)
+    {
+      await fetchCategories();
+      await fetchProducts();
+    }
   };
 
   useEffect(() => {
-    checkAccessToken(router);
-    fetchData();
+      checkAccessToken();
+      fetchData();    
   }, []);
   const QtySelector = ({ item }) => {
     const { cartItems } = globals;
@@ -234,9 +221,11 @@ export default function Home({ navigation }) {
     );
   };
   const CategoryList = () => {
+   
     function capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
+   
     const renderItem = ({ item }) => (
       <Pressable
         style={styles.category}
@@ -297,7 +286,6 @@ export default function Home({ navigation }) {
             placeholder="Search..."
             placeholderTextColor={"gray"}
             defaultValue={searchText}
-            ref={inputEl}
           />
         </View>
         {searchText && (

@@ -4,7 +4,7 @@ import {create} from 'zustand';
 const useGlobalStore = create((set) => ({
   globals: {
     username: '',
-    selectedCategory: 1,
+    selectedCategory: 0,
     cartItems: [],
     savedAddresses: [],
     shippingAddressId: 0,

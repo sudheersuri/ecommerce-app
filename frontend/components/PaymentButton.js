@@ -19,7 +19,7 @@ export default function PaymentButton({amount}) {
       const finalAmount = parseInt(amount);
       const access_token = await AsyncStorage.getItem('access_token');
       if (finalAmount < 1) {
-        showToast('error','Something went wrong, please try again later.');
+       alert('Something went wrong, please try again later.');
         return;
       }
       const response = await fetch("http://127.0.0.1:5000/create-payment-intent", {
@@ -36,45 +36,44 @@ export default function PaymentButton({amount}) {
       });
       const data = await response.json();
       if (!response.ok) {
-        showToast('error',data.message);
+       alert(data.message);
         return;
       }
       const initSheet = await stripe.initPaymentSheet({
         paymentIntentClientSecret: data.clientSecret,
       });
       if (initSheet.error) {
-        showToast('error',initSheet.error.message);
+       alert(initSheet.error.message);
         return; 
       }
       const presentSheet = await stripe.presentPaymentSheet({
         clientSecret: data.clientSecret,
       });
       if (presentSheet.error) {
-        showToast('error',presentSheet.error.message);
-       
+       alert(presentSheet.error.message);
       }
       redirectToOrdersWithSuccessMessage(router);
     } catch (err) {
-      showToast('error',err.message);
+    alert(err.message);
       return;
     }
   };
 
   return (
-    <View>
-      <Toast />
-   <Pressable onPress={pay}>
-                  <LinearGradient
-                    colors={["#DF00BC", "#9C00E4"]}
-                    start={[0, 0]}
-                    end={[1, 0]}
-                    style={[styles.button, { marginTop: 40 }]}
-                  >
-                    <Text style={{ color: "#fff", fontWeight: "600",fontSize:18 }}>
-                       Pay ${amount}
-                    </Text>
-                  </LinearGradient>
-          </Pressable>
+    <View>      
+  
+    <Pressable onPress={pay}>
+                    <LinearGradient
+                      colors={["#DF00BC", "#9C00E4"]}
+                      start={[0, 0]}
+                      end={[1, 0]}
+                      style={[styles.button, { marginTop: 40 }]}
+                    >
+                      <Text style={{ color: "#fff", fontWeight: "600",fontSize:18 }}>
+                        Pay ${amount}
+                      </Text>
+                    </LinearGradient>
+     </Pressable>
 </View>
   )
 }

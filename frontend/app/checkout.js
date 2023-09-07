@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { FlatList } from 'react-native-gesture-handler';
@@ -7,11 +7,15 @@ import { useRouter } from 'expo-router';
 import { StripeProvider } from "@stripe/stripe-react-native";
 import PaymentButton from '../components/PaymentButton';
 import useGlobalStore from './useGlobalStore';
+import { checkAccessToken } from '../functions';
 
 export default function Checkout() {
   const{globals,setGlobals} = useGlobalStore();
   const router = useRouter();
   const shippingCharge = 5;
+  useEffect(() => {
+    checkAccessToken(router);
+  }, []);
   const Header = () => {
     return (
       <View style={{position:'relative', alignItems: 'center',borderBottomWidth:1,borderBottomColor:'gray',paddingBottom:20}}>
@@ -166,7 +170,7 @@ export default function Checkout() {
                
                 
           </View>
-          {getSubTotal()!=0 && <View style={{flex:3}}>
+          {(getSubTotal()!=0 && globals.shippingAddressId!=0) && <View style={{flex:3}}>
           <StripeProvider publishableKey="pk_test_51MpIlIDYTDNtMFwaNHZ8W0ywBPcphtXCrYMO0A7nrcrTEkZImR4N7kQVsYNqkoNFPX5Ex6BkNTI4XZG3aBG8XOkZ00GVBBGcUf">
                 <PaymentButton amount={getTotal()}/>
           </StripeProvider>

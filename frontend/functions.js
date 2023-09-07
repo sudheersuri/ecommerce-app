@@ -39,13 +39,20 @@ export const redirectToOrdersWithSuccessMessage = async (router) => {
 export const checkAccessToken = async (router) => {
   try {
     const access_token = await AsyncStorage.getItem('access_token');
-    
     if (!access_token) {
       // Access token is not present, navigate to login screen
       router.replace({ pathname: "/login", params: { error:'Session Expired, Please login again.' } });
-      return;
     }
+  } catch (error) {
+    showToast('error', error.message); 
+  }
+};
+
+export const logout = async (router) => {
+  try {
+    await AsyncStorage.removeItem('access_token');
+    router.replace({ pathname: "/login", params: { message:'Logout Successfull!' } });
   } catch (error) {
     showToast('error', error.message);
   }
-};
+}
