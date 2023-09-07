@@ -105,7 +105,22 @@ const OrdersScreen = () => {
           </Modal>
         </View>);
   }
-
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+  
+    // Define options for formatting the date
+    const options = {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true,
+    };
+  
+    return date.toLocaleDateString(undefined, options);
+  };
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.orderItem} onPress={()=>{
         setSelectedOrder(item);
@@ -113,7 +128,7 @@ const OrdersScreen = () => {
     }}>
       <View>
             <Text style={{color:'#fff',fontWeight:'bold'}}>Order# {item.id.slice(5,13).toUpperCase()}</Text>
-            <Text style={{color:'#fff',opacity:0.7,marginTop:5}}>20th Dec 2019, 3:00 pm</Text>
+            <Text style={{color:'#fff',opacity:0.7,marginTop:5}}>{formatDate(item.created_timestamp)}</Text>
             <Text style={{color:'green',marginTop:10}}>Delivery by <Text style={{fontWeight:'bold'}}>21st Jan 2020</Text></Text>
       </View>
       <View style={{justifyContent:'justify-between',height:'100%',alignItems:'flex-end'}}>

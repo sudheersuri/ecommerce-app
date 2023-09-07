@@ -29,6 +29,9 @@ const numColumns = 2;
 export default function Home({ navigation }) {
   const { globals, setGlobals } = useContext(GlobalContext);
   const router = useRouter();
+  const [categories,setCategories]= useState([]);
+  const [products,setProducts]= useState([]);
+
   const fetchCategories = async () => {
     try {
       const REQUEST_URL = `${env.API_URL}/categories`;
@@ -40,10 +43,8 @@ export default function Home({ navigation }) {
       else if (response.status === 200) {
         if (data.length)
         {
-          setGlobals(prevGlobals => {
-            return {...prevGlobals,categories:data,selectedCategory:data[0].id}
-          })
-        
+         setCategories(data);
+         setGlobals({...globals,selectedCategory:data[0].id});
         }
       } else showToast("error", data.message);
     } catch (error) {
@@ -60,10 +61,9 @@ export default function Home({ navigation }) {
         redirectToLoginWithSessionExpiredMessage(router);
       else if (response.status === 200) {
         if (data.length) {
-          setGlobals(prevGlobals => {
-            return {...prevGlobals,products:data}
-          }
-          );
+          
+          setProducts(data);
+         
         };
       } else showToast("error", data.message);
     } catch (error) {
@@ -80,11 +80,11 @@ export default function Home({ navigation }) {
         redirectToLoginWithSessionExpiredMessage(router);
       else if (response.status === 200) {
         if (data.length)
-          setGlobals({
-            ...globals,
-            savedAddresses: data,
-            shippingAddressId: data[0].id,
-          });
+        {
+          setGlobals(prevGlobals=>{
+            return {...prevGlobals,savedAddresses:data,shippingAddressId:data[0].id}
+          })
+        }
       } else showToast("error", data.message);
     } catch (error) {
       showToast("error", error);
@@ -98,14 +98,15 @@ export default function Home({ navigation }) {
 
   useEffect(() => {
     checkAccessToken(router);
-    if(!globals.categories.length && !globals.products.length)
+    if(!categories.length && !products.length)
     { 
       fetchAddresses();
       fetchData();
+     
       
     }
    
-  }, []);
+  }, [products,categories]);
   const QtySelector = ({ item }) => {
     const { cartItems } = globals;
 
@@ -192,8 +193,8 @@ export default function Home({ navigation }) {
       <Image
         source={{ uri: item.imageURL }}
         style={{
-          width: screenWidth / 2 - 15,
-          height: screenWidth / 2 - 25,
+          width: screenWidth / 2 - 35,
+          height: screenWidth / 2 - 35,
           marginBottom: 40,
         }}
       />
@@ -220,7 +221,7 @@ export default function Home({ navigation }) {
 
   const ProductList = () => {
     
-    const filteredProducts = globals.products.filter(
+    const filteredProducts = products.filter(
       (product) => product.categoryId === globals.selectedCategory
     );
     
@@ -230,6 +231,7 @@ export default function Home({ navigation }) {
         renderItem={({ item, index }) => ProductItem({ item, index })}
         keyExtractor={(item) => item.id.toString()}
         numColumns={numColumns}
+        
       />
     );
   };
@@ -261,7 +263,7 @@ export default function Home({ navigation }) {
       >
         <FlatList
           horizontal
-          data={globals.categories}
+          data={categories}
           renderItem={({ item, index }) => renderItem({ item, index })}
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
@@ -320,7 +322,8 @@ export default function Home({ navigation }) {
     );
   };
   const Main = () => {
-    if(globals.products.length && globals.categories.length)
+   
+    if(products.length && categories.length)
     return (
       <View>
         <CategoryList />
@@ -409,7 +412,7 @@ const styles = StyleSheet.create({
   },
   productItem: {
     flex: 1 / 2,
-    height: 220,
+    height: 210,
     justifyContent: "center",
     alignItems: "center",
     borderTopWidth: 0.1,

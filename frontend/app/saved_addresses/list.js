@@ -33,7 +33,7 @@ export default function List() {
         <Ionicons name="location" size={45} color="white" />
         <View style={{marginLeft:5}}>
           <Text style={{color:'#fff',fontWeight:'bold'}}>{item.nickname}</Text>
-          <Text style={{color:'#fff',marginTop:5}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
+          <Text style={{color:'#fff',marginTop:5,width:'96%'}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
         </View>
       </View>
       {params?.selectionMode ? <Ionicons name="create-outline" size={24} color="white" />:<Ionicons name="chevron-forward" size={24} color="white" />}

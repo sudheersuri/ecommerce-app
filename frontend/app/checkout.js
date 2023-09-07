@@ -19,6 +19,12 @@ export default function Checkout() {
       </View>
     );
   }
+  const getAddressNickName = () => {
+    //get the shippingAddressId from globals and find the address in the savedAddresses array
+    let address = globals?.savedAddresses.find(address => address.id === globals.shippingAddressId) ?? null;
+    //join them with comma
+    return address ? address.nickname : null;
+  }
   const getShippingAddress = () => {
    
     //get the shippingAddressId from globals and find the address in the savedAddresses array
@@ -123,7 +129,7 @@ export default function Checkout() {
                 </Pressable> */}
                 <Pressable style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',borderTopWidth:1,borderTopColor:'gray',paddingVertical:10}} onPress={()=>router.push('/saved_addresses/list')}>
                       <View style={{justifyContent:'space-between'}}>
-                          <Text style={{color:'#fff'}}>Shipping To</Text>
+                          <Text style={{color:'#fff'}}>Shipping To{' '+getAddressNickName()}</Text>
                           {getShippingAddress() ? (
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                               <Ionicons name="location" size={20} color="#fff" />

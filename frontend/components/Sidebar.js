@@ -51,18 +51,6 @@ export default function Sidebar() {
             Saved Addresses
           </Text>
         </Pressable>
-        <Pressable
-            style={{flexDirection:'row',alignItems:'center', marginTop: 30}}
-          onPress={() => {
-            setGlobals({ ...globals, showSideBar: false });
-            router.push("/profile");
-          }}
-        >
-            <Ionicons name="person" size={20} color="gray" />
-          <Text style={{ color: "#fff", fontSize: 18,marginLeft:10 }}>
-            Profile
-          </Text>
-        </Pressable>
       </View>
     )
   );

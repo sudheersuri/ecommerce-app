@@ -5,7 +5,7 @@ from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
 from bson.json_util import dumps
-import datetime
+from datetime import datetime
 
 import os
 import stripe
@@ -52,6 +52,14 @@ def login():
     access_token = create_access_token(identity=str(user['_id']))
     return jsonify(access_token=access_token,username=user['username']), 200
 
+def format_timestamp(timestamp_obj):
+    if "$date" in timestamp_obj:
+        timestamp_str = timestamp_obj["$date"]
+        timestamp_datetime = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+        formatted_timestamp = timestamp_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        return formatted_timestamp
+    else:
+        return None  # Handle
 
 @app.route('/create-payment-intent', methods=['POST'])
 @jwt_required()
@@ -187,6 +195,9 @@ def get_orders():
 
         # Convert the cursor to a list of dictionaries
         orders_list = list(orders)
+        for order in orders_list:
+            if 'created_timestamp' in order:
+                order['created_timestamp'] = order['created_timestamp'].strftime('%Y-%m-%d %H:%M:%S')
 
          # Convert ObjectId to string in each document
         for order in orders_list:
