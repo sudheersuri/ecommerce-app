@@ -6,16 +6,16 @@ import {
     Pressable,
     ActivityIndicator,
   } from "react-native";
-  import React, { useContext, useState } from "react";
+  import React, { useContext, useEffect, useState } from "react";
   import Ionicons from "@expo/vector-icons/Ionicons";
   import { Controller, useForm } from "react-hook-form";
-  import { useRouter } from "expo-router";
+  import { useLocalSearchParams, useRouter } from "expo-router";
   import { LinearGradient } from "expo-linear-gradient";
   import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
 import GlobalContext from "../../GlobalContext";
-import { showToast } from "../../functions";
+import { checkAccessToken, showToast } from "../../functions";
 import env from "../../env";
 
 
@@ -24,7 +24,10 @@ export default function Page() {
     const [loading,setLoading] = useState(false);
     const router = useRouter();
     const {globals,setGlobals} = useContext(GlobalContext);
-  
+    const params = useLocalSearchParams();
+    useEffect(() => {
+      checkAccessToken(router);
+    }, [])
     const Header = () => {
       return (
         <View
@@ -54,7 +57,16 @@ export default function Page() {
         </View>
       );
     };
-    const { handleSubmit, control, formState, watch } = useForm();
+   
+    const { handleSubmit, control, formState, watch } = useForm({
+      defaultValues: {
+        nickname:params.nickname || '',
+        address:params.address || '',
+        city:params.city || '',
+        state:params.state || '',
+        zipcode:params.zipcode || '',
+      },
+    });
     const { errors } = formState;
     const fetchAddresses = async () => {
       try {
@@ -89,6 +101,10 @@ export default function Page() {
         setLoading(true);
         const access_token = await AsyncStorage.getItem('access_token');
         // Handle form submission here
+        if(params?.id)
+        {
+          reqdata.id = params.id;
+        }
         fetch(REQUEST_URL, {
           method: 'POST',
           headers: {

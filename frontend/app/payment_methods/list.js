@@ -1,11 +1,15 @@
 import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { checkAccessToken } from '../../functions';
 
 export default function List() {
    const router = useRouter();
+   useEffect(() => {
+    checkAccessToken(router);
+  }, []);
    const Header = () => {
         return (
           <View style={{position:'relative', alignItems: 'center',borderBottomWidth:1,borderBottomColor:'gray',paddingBottom:20}}>

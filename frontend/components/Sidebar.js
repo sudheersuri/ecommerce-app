@@ -43,7 +43,7 @@ export default function Sidebar() {
           style={{flexDirection:'row',alignItems:'center', marginTop: 30}}
           onPress={() => {
             setGlobals({ ...globals, showSideBar: false });
-            router.push("/saved_addresses/list");
+            router.push({pathname:"/saved_addresses/list",params:{selectionMode:true}});
           }}
         >
           <Ionicons name="location" size={20} color="gray" />

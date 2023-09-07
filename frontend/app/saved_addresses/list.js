@@ -1,15 +1,19 @@
 import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import GlobalContext from '../../GlobalContext';
+import { checkAccessToken } from '../../functions';
 
 
 export default function List() {
    const router = useRouter();
    const {globals,setGlobals} = useContext(GlobalContext);
-
+   useEffect(() => {
+    checkAccessToken(router);
+  }, []);
+   const params = useLocalSearchParams();
    const Header = () => {
         return (
           <View style={{position:'relative', alignItems: 'center',paddingBottom:20}}>
@@ -21,7 +25,10 @@ export default function List() {
 
   const AddressItem = ({item}) => {
    
-   return (<Pressable  style={{flexDirection:"row",justifyContent:'space-between',alignItems:'center',borderBottomWidth:0, borderRadius:10,borderBottomColor:"gray",padding:10,backgroundColor:globals.shippingAddressId===item.id?'#1F1F1F':'transparent',paddingVertical:20}} onPress={() => setGlobals({...globals,shippingAddressId:item.id})}>
+   return (<Pressable  style={{flexDirection:"row",justifyContent:'space-between',alignItems:'center',borderBottomWidth:0, borderRadius:10,borderBottomColor:"gray",padding:10,backgroundColor:globals.shippingAddressId===item.id && !params?.selectionMode ?'#1F1F1F':'transparent',paddingVertical:20}} 
+      onPress={() => {
+        params?.selectionMode?router.push({pathname:'/saved_addresses/create_or_edit',params:{...item}}) :setGlobals({...globals,shippingAddressId:item.id})
+      }}>
       <View style={{flexDirection:'row',alignItems:'center'}}>
         <Ionicons name="location" size={45} color="white" />
         <View style={{marginLeft:5}}>
@@ -29,7 +36,7 @@ export default function List() {
           <Text style={{color:'#fff',marginTop:5}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
         </View>
       </View>
-      <Ionicons name="chevron-forward" size={24} color="white" />
+      {params?.selectionMode ? <Ionicons name="create-outline" size={24} color="white" />:<Ionicons name="chevron-forward" size={24} color="white" />}
     </Pressable>)
   }
   return (

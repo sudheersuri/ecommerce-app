@@ -134,20 +134,44 @@ def save_address():
         # Get the address data from the request
         address_data = request.get_json()
 
-        # Create a new address document
-        new_address = {
-            'user_id': current_user_id,
-            'nickname': address_data.get('nickname'),
-            'address': address_data.get('address'),
-            'city': address_data.get('city'),
-            'state': address_data.get('state'),
-            'zipcode': address_data.get('zipcode'),
-        }
+        # Check if an ID is provided in the request
+        address_id = address_data.get('id')
+        
+        if address_id:
+            
+            # Update operation: Check if the provided ID exists in the 'addresses' collection
+            existing_address = mongo.db.addresses.find_one({'_id': ObjectId(address_id), 'user_id': current_user_id})
 
-        # Insert the address document into the 'addresses' collection
-        mongo.db.addresses.insert_one(new_address)
+            if existing_address:
+                # Update the existing address document
+                updated_address = {
+                    'user_id': current_user_id,
+                    'nickname': address_data.get('nickname'),
+                    'address': address_data.get('address'),
+                    'city': address_data.get('city'),
+                    'state': address_data.get('state'),
+                    'zipcode': address_data.get('zipcode'),
+                }
 
-        return jsonify({'message': 'Address saved successfully'}), 200
+                mongo.db.addresses.update_one({'_id': ObjectId(address_id)}, {'$set': updated_address})
+
+                return jsonify({'message': 'Address updated successfully'}), 200
+            else:
+                return jsonify({'message': 'No address with the provided ID exists'}), 404
+        else:
+            # Create operation: Insert a new address document
+            new_address = {
+                'user_id': current_user_id,
+                'nickname': address_data.get('nickname'),
+                'address': address_data.get('address'),
+                'city': address_data.get('city'),
+                'state': address_data.get('state'),
+                'zipcode': address_data.get('zipcode'),
+            }
+
+            mongo.db.addresses.insert_one(new_address)
+
+            return jsonify({'message': 'Address saved successfully'}), 200
 
     except Exception as e:
         return jsonify({'message': str(e)}), 500
