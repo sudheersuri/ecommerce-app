@@ -22,6 +22,7 @@ import {
 import Menu from "../components/Menu";
 import Sidebar from "../components/Sidebar";
 import useGlobalStore from "./useGlobalStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
@@ -31,7 +32,7 @@ export default function Home({ navigation }) {
   const router = useRouter();
   const [categories,setCategories]= useState([]);
   const [products,setProducts]= useState([]);
-
+  const [username,setUsername] = useState('');
 
   const fetchCategories = async () => {
     try {
@@ -85,6 +86,10 @@ export default function Home({ navigation }) {
     {
       await fetchCategories();
       await fetchProducts();
+      await AsyncStorage.getItem('username').then((value) => {
+        if(value) setUsername(value);
+      }
+      );
     }
   };
 
@@ -331,7 +336,7 @@ export default function Home({ navigation }) {
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text style={{ fontWeight: "bold", color: "#fff" }}>
-            {globals.username && globals.username}
+            {username && username}
           </Text>
           <Pressable
             style={{ position: "relative", borderRadius: 10 }}

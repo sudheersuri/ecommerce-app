@@ -3,7 +3,6 @@ import {create} from 'zustand';
 // Define the Zustand store for globals
 const useGlobalStore = create((set) => ({
   globals: {
-    username: '',
     selectedCategory: 0,
     cartItems: [],
     savedAddresses: [],
