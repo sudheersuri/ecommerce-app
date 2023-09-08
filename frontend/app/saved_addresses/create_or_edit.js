@@ -53,7 +53,7 @@ export default function Page() {
               fontWeight: "bold",
             }}
           >
-            Add New Address
+           {params?.nickname?'Edit Address': 'Add New Address'}
           </Text>
         </View>
       );

@@ -54,11 +54,11 @@ export default function List() {
       onPress={() => {
         params?.selectionMode?router.push({pathname:'/saved_addresses/create_or_edit',params:{...item}}) :setGlobals({...globals,shippingAddressId:item.id})
       }}>
-      <View style={{flexDirection:'row',alignItems:'center',flex:8}}>
+      <View style={{flexDirection:'row',alignItems:'center',flex:8,paddingRight:5}}>
         <Ionicons name="location" size={45} color="white" />
         <View style={{marginLeft:5}}>
           <Text style={{color:'#fff',fontWeight:'bold'}}>{item.nickname}</Text>
-          <Text style={{color:'#fff',marginTop:5,width:params.selectionMode?"98%":"100%"}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
+          <Text style={{color:'#fff',marginTop:5,width:"98%"}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
         </View>
       </View>
       <View style={{flex:1}}>

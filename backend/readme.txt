@@ -12,3 +12,6 @@ pip install Flask-Bcrypt
 pip install Flask-PyMongo
 pip install pymongo
 pip install python-dotenv
+pip install stripe
+
+# create .env files
