@@ -1,20 +1,22 @@
-import { View, Text, TextInput, Button, Alert, Pressable, StyleSheet } from 'react-native'
+import { View, Text, TextInput, Button, Alert, Pressable, StyleSheet, ActivityIndicator } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStripe } from '@stripe/stripe-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { redirectToOrdersWithSuccessMessage, showToast } from '../functions';
+import { redirectToOrdersWithSuccessMessage} from '../functions';
 
 import { useRouter } from 'expo-router';
 import useGlobalStore from '../app/useGlobalStore';
+import { useState } from 'react';
 
 export default function PaymentButton({amount}) {
    const stripe = useStripe();
    const{globals,setGlobals} = useGlobalStore();
    const router = useRouter();
+   const [loading, setLoading] = useState(false);
    const pay = async () => {
 
-
+    setLoading(true);
     try {
       const finalAmount = parseInt(amount);
       const access_token = await AsyncStorage.getItem('access_token');
@@ -35,6 +37,7 @@ export default function PaymentButton({amount}) {
         }),
       });
       const data = await response.json();
+      setLoading(false);
       if (!response.ok) {
        alert(data.message);
         return;
@@ -51,12 +54,16 @@ export default function PaymentButton({amount}) {
       });
       if (presentSheet.error) {
        alert(presentSheet.error.message);
+       return;
       }
+      
       redirectToOrdersWithSuccessMessage(router);
     } catch (err) {
+      setLoading(false);
     alert(err.message);
       return;
     }
+   
   };
 
   return (
@@ -69,9 +76,11 @@ export default function PaymentButton({amount}) {
                       end={[1, 0]}
                       style={[styles.button, { marginTop: 40 }]}
                     >
-                      <Text style={{ color: "#fff", fontWeight: "600",fontSize:18 }}>
+                     {loading?
+                     <ActivityIndicator size="small" color="#fff" />
+                     :<Text style={{ color: "#fff", fontWeight: "600",fontSize:18 }}>
                         Pay ${amount}
-                      </Text>
+                      </Text>}
                     </LinearGradient>
      </Pressable>
 </View>

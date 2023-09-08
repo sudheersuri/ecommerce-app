@@ -63,7 +63,7 @@ const OrdersScreen = () => {
     }
   
     return (
-        <View style={styles.centeredView}>
+        <View style={modalVisible?styles.centeredView:null}>
           <Modal
             animationType="slide"
             transparent={true}
@@ -90,13 +90,13 @@ const OrdersScreen = () => {
                         style={{width:'100%'}}
                 />
                 <View style={{width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-                    <View>
+                    <View style={{flex:8}}>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
                              <Ionicons name="location" size={20} color="#fff" />
-                             <Text style={{color:'#fff'}}>{get_shipping_address()}</Text>
+                             <Text style={{color:'#fff',width:'90%',marginLeft:4}}>{get_shipping_address()}</Text>
                         </View>
                     </View>    
-                    <Text style={{color:'#fff',fontSize:20,fontWeight:'bold'}}>${selectedOrder.total}</Text>
+                    <Text style={{flex:2,textAlign:'right',color:'#fff',fontSize:20,fontWeight:'bold',textAlign:'right'}}>${parseFloat(selectedOrder.total/100)}</Text>
                 </View>
               </View>
               
@@ -121,7 +121,7 @@ const OrdersScreen = () => {
     return date.toLocaleDateString(undefined, options);
   };
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.orderItem} onPress={()=>{
+    <Pressable style={styles.orderItem} onPress={()=>{
         setSelectedOrder(item);
         setModalVisible(true);
     }}>
@@ -132,11 +132,11 @@ const OrdersScreen = () => {
       </View>
       <View style={{justifyContent:'justify-between',height:'100%',alignItems:'flex-end'}}>
         <Text style={{color:'#fff',fontWeight:'bold',fontSize:18}}>
-                ${item.total}
+        ${parseFloat(item.total/100)}
         </Text>
         <Text style={{color:'#fff',marginTop:22}}>View</Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 
   return (
@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#000",
         paddingTop: 40,
         paddingHorizontal: 15,
-       
   },
   orderList: {
     paddingBottom: 16,
@@ -184,8 +183,7 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    marginTop: 250,
-  
+    marginTop:250,
   },
   modalView: {
     backgroundColor: '#000',
@@ -194,7 +192,6 @@ const styles = StyleSheet.create({
     margin:20,
     borderWidth:1,
     padding: 15,
-    
     alignItems: 'center',
   },
   button: {

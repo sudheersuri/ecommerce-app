@@ -28,7 +28,7 @@ export default function Checkout() {
     //get the shippingAddressId from globals and find the address in the savedAddresses array
     let address = globals?.savedAddresses.find(address => address.id === globals.shippingAddressId) ?? null;
     //join them with comma
-    return address ? address.nickname : null;
+    return address ? address.nickname : '';
   }
   const getShippingAddress = () => {
    
@@ -94,7 +94,10 @@ export default function Checkout() {
         data={globals.cartItems}
         renderItem={ProductItem}
         keyExtractor={item => item.id}
-      />) : <Text style={{color:'#fff'}}>No items in cart</Text>
+      />) : <View style={{alignItems:'center',justifyContent:'center',flex:1}}>
+          <Ionicons name="cart-outline" size={50} color="gray" />
+          <Text style={{color:'#fff'}}>No items in cart</Text>
+        </View>
   } ;
   const getSubTotal = () => {
     //if no cart items return 0

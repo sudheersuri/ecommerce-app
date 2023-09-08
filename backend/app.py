@@ -6,6 +6,7 @@ from bson.objectid import ObjectId
 from dotenv import load_dotenv
 from bson.json_util import dumps
 from datetime import datetime
+import datetime
 
 import os
 import stripe
@@ -69,9 +70,8 @@ def create_payment_intent():
         data = request.get_json()
         
         # Calculate the total amount based on the order
-        # This is just an example; adjust it to your use case
-        total_amount = data['amount']
-   
+        total_amount = int(data['amount'] * 100)
+       
         # Create a PaymentIntent with the calculated total amount
         payment_intent = stripe.PaymentIntent.create(
             amount=total_amount,
