@@ -1,6 +1,6 @@
 # ecommerce-app
 
-React Native Login Signup UI with Python's Flask and JWT Authentication
+React Native Ecommerce App with Stripe Payments
 
 ![Project Demo](https://github.com/sudheersuri/ecommerce-app/blob/main/demo.png)
 
