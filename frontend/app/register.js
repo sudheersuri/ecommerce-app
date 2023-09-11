@@ -13,16 +13,18 @@ import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import Toast from 'react-native-toast-message';
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { SocialMediaButton } from "../components/SocialMediaButton";
 import { API_REQUEST, showToast } from "../functions";
 import env from "../env";
+import GlobalContext from "./GlobalContext";
 
 
 const REQUEST_URL = `${env.API_URL}/register`;
 
 export default function Register() {
-  
+  const {theme,setTheme} = useContext(GlobalContext);
+ 
   const [loading,setLoading] = useState(false);
   const {
     control,
@@ -63,15 +65,15 @@ export default function Register() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container,{backgroundColor:theme.backgroundColor}]}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Pressable
-          onPress={() => router.replace("/login")}
-          style={styles.backButton}
+          onPress={() => router.back()}
+          style={[styles.backButton,{backgroundColor:theme.backgroundColor,borderWidth:theme.mode==='light'?0:2}]}
         >
-          <Ionicons name="chevron-back" size={32} color="white" />
+          <Ionicons name="chevron-back" size={32} color={theme.textColor} />
         </Pressable>
-        <Text style={[styles.title, { marginLeft: 10 }]}>Register</Text>
+        <Text style={[styles.title, { marginLeft: 10,color:theme.textColor }]}>Register</Text>
       </View>
       <Text style={styles.smallText}>
         Register with one of the following options
@@ -88,7 +90,7 @@ export default function Register() {
         <SocialMediaButton icon="logo-apple" />
       </View>
      
-      <Text style={[styles.label, { marginBottom: 10, marginLeft: 7 }]}>Username</Text>
+      <Text style={[styles.label, { marginBottom: 10, marginLeft: 7,color:theme.textColor }]}>Username</Text>
       <View style={{position:"relative"}}>
       <Controller
         control={control}
@@ -101,7 +103,7 @@ export default function Register() {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            style={[styles.field]}
+            style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
             placeholderTextColor="#888888"
           />
         )}
@@ -111,7 +113,7 @@ export default function Register() {
       </View>
 
      
-      <Text style={[styles.label, { marginTop:30,marginBottom: 10, marginLeft: 7 }]}>Email</Text>
+      <Text style={[styles.label, { marginTop:30,marginBottom: 10, marginLeft: 7,color:theme.textColor }]}>Email</Text>
       <View style={{position:"relative"}}>
       <Controller
         control={control}
@@ -124,7 +126,7 @@ export default function Register() {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            style={styles.field}
+            style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
             placeholderTextColor="#888888"
           />
         )}
@@ -136,7 +138,7 @@ export default function Register() {
       <Text
         style={[
           styles.label,
-          { marginTop: 30, marginBottom: 10, marginLeft: 7 },
+          { marginTop: 30, marginBottom: 10, marginLeft: 7,color:theme.textColor },
         ]}
       >
         Password
@@ -153,7 +155,7 @@ export default function Register() {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            style={styles.field}
+            style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
             placeholderTextColor="#888888"
             secureTextEntry
           />
@@ -172,13 +174,13 @@ export default function Register() {
       )}
       <Pressable onPress={handleSubmit(onSubmit)}>
         <LinearGradient
-          colors={["#DF00BC", "#9C00E4"]}
+          colors={theme.buttonThemeColor}
           start={[0, 0]}
           end={[1, 0]}
           style={[styles.button, { marginTop: 40 }]}
         >
             {loading?
-           <ActivityIndicator size="small" color="#fff" />:
+           <ActivityIndicator size="small" color={theme.textColor} />:
           <Text style={{ color: "#fff", fontWeight: "600" }}>Register</Text>}
         </LinearGradient>
       </Pressable>
@@ -212,7 +214,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: "500",
-    color: "#fff",
+   
   },
   smallText: {
     color: "#888888",
@@ -220,7 +222,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   label: {
-    color: "#fff",
+   
     fontSize: 17,
   },
   errorText:{
@@ -230,7 +232,6 @@ const styles = StyleSheet.create({
     left:7
   },
   field: {
-    backgroundColor: "#171717",
     borderRadius: 15,
     borderColor: "#1F1F1F",
     borderWidth: 1,
@@ -239,9 +240,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   backButton: {
-    backgroundColor: "#000",
+   
     borderRadius: 18,
-    borderWidth: 2,
+    
     borderColor: "#1F1F1F",
     paddingHorizontal:10,
     paddingVertical:7

@@ -6,7 +6,7 @@ import {
     Pressable,
     ActivityIndicator,
   } from "react-native";
-  import React, {  useEffect, useState } from "react";
+  import React, {  useContext, useEffect, useState } from "react";
   import Ionicons from "@expo/vector-icons/Ionicons";
   import { Controller, useForm } from "react-hook-form";
   import { useLocalSearchParams, useRouter } from "expo-router";
@@ -18,6 +18,7 @@ import Toast from 'react-native-toast-message';
 import { checkAccessToken, showToast } from "../../functions";
 import env from "../../env";
 import useGlobalStore from "../useGlobalStore";
+import GlobalContext from "../GlobalContext";
 
 
 const REQUEST_URL = `${env.API_URL}/save_address`;
@@ -25,6 +26,7 @@ export default function Page() {
     const [loading,setLoading] = useState(false);
     const router = useRouter();
     const{globals,setGlobals} = useGlobalStore();
+    const {theme,setTheme} = useContext(GlobalContext);
     const params = useLocalSearchParams();
     useEffect(() => {
       checkAccessToken(router);
@@ -41,13 +43,13 @@ export default function Page() {
           <Ionicons
             name="chevron-back-outline"
             size={30}
-            color="#fff"
+            color={theme.textColor}
             style={{ position: "absolute", left: 0 }}
             onPress={() => router.back()}
           />
           <Text
             style={{
-              color: "#fff",
+              color: theme.textColor,
               marginTop: 5,
               fontSize: 18,
               fontWeight: "bold",
@@ -59,7 +61,7 @@ export default function Page() {
       );
     };
    
-    const { handleSubmit, control, formState, watch } = useForm({
+    const { handleSubmit, control, formState } = useForm({
       defaultValues: {
         nickname:params.nickname || '',
         address:params.address || '',
@@ -134,14 +136,14 @@ export default function Page() {
           });
       };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor:theme.backgroundColor}]}>
         <Header />
        <ScrollView
         style={{ marginVertical: 30, marginHorizontal: 2 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.fullWidth}>
-          <Text style={[styles.label, { marginBottom: 10 }]}>Nickname</Text>
+          <Text style={[styles.label, { marginBottom: 10,color:theme.textColor }]}>Nickname</Text>
           <Controller
             name="nickname"
             control={control}
@@ -152,7 +154,7 @@ export default function Page() {
                   onChange(text);
                 }}
                 placeholder="Home"
-                style={styles.field}
+                style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
                 value={value}
                 placeholderTextColor={"gray"}
               />
@@ -164,7 +166,7 @@ export default function Page() {
         </View>
           <View>
             <View style={styles.fullWidth}>
-              <Text style={[styles.label, { marginBottom: 10 }]}>Address</Text>
+              <Text style={[styles.label, { marginBottom: 10,color:theme.textColor  }]}>Address</Text>
               <Controller
                 name="address"
                 control={control}
@@ -178,7 +180,7 @@ export default function Page() {
                       value={value}
                       placeholder="Enter your address"
                      
-                      style={styles.field}
+                       style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
                       placeholderTextColor={"gray"}
                     />
                     {errors.address && (
@@ -189,7 +191,7 @@ export default function Page() {
               />
             </View>
             <View style={styles.fullWidth}>
-              <Text style={[styles.label, { marginBottom: 10 }]}>City</Text>
+              <Text style={[styles.label, { marginBottom: 10,color:theme.textColor  }]}>City</Text>
               <Controller
                 name="city"
                 control={control}
@@ -202,7 +204,7 @@ export default function Page() {
                       }}
                       value={value}
                       placeholder="Enter your city"
-                      style={styles.field}
+                       style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
                       placeholderTextColor={"gray"}
                     />
                     {errors.city && (
@@ -213,7 +215,7 @@ export default function Page() {
               />
             </View>
             <View style={styles.fullWidth}>
-              <Text style={[styles.label, { marginBottom: 10 }]}>State</Text>
+              <Text style={[styles.label, { marginBottom: 10,color:theme.textColor  }]}>State</Text>
               <Controller
                 name="state"
                 control={control}
@@ -226,7 +228,7 @@ export default function Page() {
                       }}
                       value={value}
                       placeholder="Enter your state"
-                      style={styles.field}
+                       style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
                       placeholderTextColor={"gray"}
                     />
                     {errors.state && (
@@ -237,7 +239,7 @@ export default function Page() {
               />
             </View>
             <View style={styles.fullWidth}>
-              <Text style={[styles.label, { marginBottom: 10 }]}>Zip Code</Text>
+              <Text style={[styles.label, { marginBottom: 10,color:theme.textColor  }]}>Zip Code</Text>
               <Controller
                 name="zipcode"
                 control={control}
@@ -250,7 +252,7 @@ export default function Page() {
                       }}
                       value={value}
                       placeholder="Enter your zip code"
-                      style={styles.field}
+                       style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
                       placeholderTextColor={"gray"}
                     />
                     {errors.zipcode && (
@@ -264,14 +266,14 @@ export default function Page() {
 
         <Pressable onPress={handleSubmit(onSubmit)}>
           <LinearGradient
-            colors={["#DF00BC", "#9C00E4"]}
+            colors={theme.buttonThemeColor}
             start={[0, 0]}
             end={[1, 0]}
             style={[styles.button, { marginTop: 40 }]}
           >
              {loading?
-           <ActivityIndicator size="small" color="#fff" />:
-          <Text style={{ color: "#fff", fontWeight: "600" }}>Save</Text>}
+           <ActivityIndicator size="small" color={theme.textColor} />:
+          <Text style={{ color:'#fff', fontWeight: "600" }}>Save</Text>}
           </LinearGradient>
         </Pressable>
         <Toast />
@@ -283,7 +285,7 @@ export default function Page() {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#000",
+     
       paddingTop: 40,
       paddingHorizontal: 15,
     },
@@ -299,15 +301,14 @@ const styles = StyleSheet.create({
       paddingVertical: 22,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "#DF00BC",
       borderRadius: 15,
     },
     field: {
-      backgroundColor: "#171717",
+     
       borderRadius: 15,
       borderColor: "#1F1F1F",
       borderWidth: 1,
-      color: "#fff",
+     
       paddingVertical: 18,
       paddingHorizontal: 15,
     },
@@ -315,7 +316,6 @@ const styles = StyleSheet.create({
       color: "red",
     },
     label: {
-      color: "#fff",
       fontSize: 17,
     },
   });

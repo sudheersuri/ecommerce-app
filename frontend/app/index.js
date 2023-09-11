@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, {useEffect, useRef, useState } from "react";
+import React, {useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import env from "../env";
@@ -23,6 +23,7 @@ import Menu from "../components/Menu";
 import Sidebar from "../components/Sidebar";
 import useGlobalStore from "./useGlobalStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import GlobalContext from "./GlobalContext";
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
@@ -30,6 +31,7 @@ const numColumns = 2;
 export default function Home({ navigation }) {
   const{globals,setGlobals} = useGlobalStore();
   const router = useRouter();
+  const {theme,setTheme} = useContext(GlobalContext);
   const [categories,setCategories]= useState([]);
   const [products,setProducts]= useState([]);
   const [username,setUsername] = useState('');
@@ -153,16 +155,16 @@ export default function Home({ navigation }) {
       <View>
         {currentQty === 0 ? (
           <TouchableOpacity onPress={() => addItemToCart()}>
-            <Ionicons name="add-circle" size={30} color="white" />
+            <Ionicons name="add-circle" size={30} color={theme.textColor} />
           </TouchableOpacity>
         ) : (
           <View style={{ flexDirection: "column", alignItems: "center" }}>
             <TouchableOpacity onPress={handleIncrement}>
-              <Ionicons name="add-circle" size={30} color="white" />
+              <Ionicons name="add-circle" size={30} color={theme.textColor}/>
             </TouchableOpacity>
-            <Text style={{ color: "#fff" }}>{currentQty}</Text>
+            <Text style={{ color: theme.textColor}}>{currentQty}</Text>
             <TouchableOpacity onPress={handleDecrement}>
-              <Ionicons name="remove-circle" size={30} color="white" />
+              <Ionicons name="remove-circle" size={30} color={theme.textColor} />
             </TouchableOpacity>
           </View>
         )}
@@ -201,7 +203,7 @@ export default function Home({ navigation }) {
         }}
       >
         <View>
-          <Text style={{ color: "#fff" }}>$ {item.price}</Text>
+          <Text style={{ color: theme.textColor }}>$ {item.price}</Text>
           <Text style={{ color: "gray", fontWeight: "bold" }}>{item.name}</Text>
         </View>
         <QtySelector item={item} />
@@ -238,7 +240,7 @@ export default function Home({ navigation }) {
       >
         <Text
           style={{
-            color: "#fff",
+            color: theme.textColor,
             fontWeight:
               globals.selectedCategory === item.id ? "bold" : "normal",
             opacity: globals.selectedCategory === item.id ? 1 : 0.8,
@@ -283,7 +285,7 @@ export default function Home({ navigation }) {
           <Ionicons
             name="ios-search"
             size={24}
-            color="white"
+            color={theme.textColor}
             style={{ opacity: 0.5 }}
           />
           <TextInput
@@ -324,7 +326,7 @@ export default function Home({ navigation }) {
       </View>
     );
     else return (<View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-      <Text style={{color:'#fff'}}>Loading...</Text>
+      <Text style={{color:theme.textColor}}>Loading...</Text>
     </View>);
   }
   const Header = () => {
@@ -332,10 +334,10 @@ export default function Home({ navigation }) {
       <View style={styles.header}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Menu />
-          <Text style={styles.companyName}>Shopper</Text>
+          <Text style={[styles.companyName,{color:theme.textColor}]}>Shopper</Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ fontWeight: "bold", color: "#fff" }}>
+          <Text style={{ fontWeight: "bold", color:styles.textColor }}>
             {username && username}
           </Text>
           <Pressable
@@ -344,7 +346,7 @@ export default function Home({ navigation }) {
               getCartItemsCount() ? router.push("/checkout") : "";
             }}
           >
-            <Ionicons name="cart" size={30} color="white" />
+            <Ionicons name="cart" size={30} color={theme.textColor} />
             <View
               style={{
                 backgroundColor: "#FF6746",
@@ -366,7 +368,7 @@ export default function Home({ navigation }) {
   };
   return (
     <>
-      <View style={styles.container}>
+      <View style={[styles.container,{backgroundColor:theme.backgroundColor}]}>
         <Header />
         <Sidebar />
         <Main />
@@ -378,7 +380,7 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+   
     paddingTop: 40,
   },
   input: {
@@ -392,7 +394,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   companyName: {
-    color: "#fff",
     fontWeight: "bold",
     fontSize: 20,
     marginLeft: 30,

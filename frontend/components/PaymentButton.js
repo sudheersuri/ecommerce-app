@@ -7,9 +7,11 @@ import { redirectToOrdersWithSuccessMessage} from '../functions';
 
 import { useRouter } from 'expo-router';
 import useGlobalStore from '../app/useGlobalStore';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import GlobalContext from '../app/GlobalContext';
 
 export default function PaymentButton({amount}) {
+  const {theme} = useContext(GlobalContext);
    const stripe = useStripe();
    const{globals,setGlobals} = useGlobalStore();
    const router = useRouter();
@@ -71,7 +73,7 @@ export default function PaymentButton({amount}) {
   
     <Pressable onPress={pay}>
                     <LinearGradient
-                      colors={["#DF00BC", "#9C00E4"]}
+                      colors={theme.buttonThemeColor}
                       start={[0, 0]}
                       end={[1, 0]}
                       style={[styles.button, { marginTop: 40 }]}

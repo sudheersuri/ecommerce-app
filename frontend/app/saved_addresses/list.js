@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,9 +7,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { API_REQUEST, checkAccessToken, redirectToLoginWithSessionExpiredMessage, showToast } from '../../functions';
 import useGlobalStore from '../useGlobalStore';
 import env from '../../env';
+import GlobalContext from '../GlobalContext';
 
 
 export default function List() {
+  const {theme} = useContext(GlobalContext);
    const router = useRouter();
    const{globals,setGlobals} = useGlobalStore();
    const fetchAddresses = async () => {
@@ -42,38 +44,38 @@ export default function List() {
    const Header = () => {
         return (
           <View style={{position:'relative', alignItems: 'center',paddingBottom:20}}>
-            <Ionicons name="chevron-back-outline" size={30} color="#fff" style={{position:'absolute',left:0}} onPress={() => router.back()} />
-            <Text style={{ color:'#fff',marginTop:5,fontSize:18,fontWeight:'bold' }}>Saved Addresses</Text>
+            <Ionicons name="chevron-back-outline" size={30} color={theme.textColor} style={{position:'absolute',left:0}} onPress={() => router.back()} />
+            <Text style={{ color:theme.textColor,marginTop:5,fontSize:18,fontWeight:'bold' }}>Saved Addresses</Text>
           </View>
         );
   }
 
   const AddressItem = ({item}) => {
    
-   return (<Pressable  style={{flexDirection:"row",justifyContent:'space-between',alignItems:'center',borderBottomWidth:0, borderRadius:10,borderBottomColor:"gray",padding:10,backgroundColor:globals.shippingAddressId===item.id && !params?.selectionMode ?'#1F1F1F':'transparent',paddingVertical:20}} 
+   return (<Pressable  style={{flexDirection:"row",justifyContent:'space-between',alignItems:'center',borderBottomWidth:0, borderRadius:10,borderBottomColor:theme.selectedAddressItemBackgroundColor,padding:10,backgroundColor:globals.shippingAddressId===item.id && !params?.selectionMode ?theme.selectedAddressItemBackgroundColor:'transparent',paddingVertical:20}} 
       onPress={() => {
         params?.selectionMode?router.push({pathname:'/saved_addresses/create_or_edit',params:{...item}}) :setGlobals({...globals,shippingAddressId:item.id})
       }}>
       <View style={{flexDirection:'row',alignItems:'center',flex:8,paddingRight:5}}>
-        <Ionicons name="location" size={45} color="white" />
+        <Ionicons name="location" size={45} color={theme.textColor} />
         <View style={{marginLeft:5}}>
-          <Text style={{color:'#fff',fontWeight:'bold'}}>{item.nickname}</Text>
-          <Text style={{color:'#fff',marginTop:5,width:"98%"}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
+          <Text style={{color:theme.textColor,fontWeight:'bold'}}>{item.nickname}</Text>
+          <Text style={{color:theme.textColor,marginTop:5,width:"98%"}}>{`${item.address}, ${item.city}, ${item.state}, ${item.zipcode}`}</Text>
         </View>
       </View>
       <View style={{flex:1}}>
-      {params?.selectionMode ? <Ionicons name="create-outline" size={24} color="white" />:null}
+      {params?.selectionMode ? <Ionicons name="create-outline" size={24} color={theme.textColor} />:null}
       </View>
     </Pressable>)
   }
   return (
-    <View style={[styles.container,{position:'relative'}]}>
+    <View style={[styles.container,{position:'relative',backgroundColor:theme.backgroundColor}]}>
       <Header />
       {
         globals.savedAddresses?.length === 0 ? (
             <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                 <Ionicons name="wallet-outline" size={60} color="gray" />
-                <Text style={{color:'#fff'}}>No Saved Addresses</Text>
+                <Text style={{color:theme.textColor}}>No Saved Addresses</Text>
                 
             </View>
         ) : (
@@ -88,12 +90,12 @@ export default function List() {
       <View style={{justifyContent:'center',alignItems:'center'}}>
       <Pressable style={{position:'absolute',bottom:25,width:'100%'}} onPress={()=>router.push('/saved_addresses/create_or_edit')}>
                         <LinearGradient
-                        colors={["#DF00BC", "#9C00E4"]}
+                        colors={theme.buttonThemeColor}
                         start={[0, 0]}
                         end={[1, 0]}
                         style={[styles.button, { marginTop: 40 }]}
                         >
-                        <Text style={{ color: "#fff", fontWeight: "600" }}>Add New Address</Text>
+                        <Text style={{ color: '#fff', fontWeight: "600" }}>Add New Address</Text>
                     </LinearGradient>
       </Pressable>
       </View>

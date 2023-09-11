@@ -1,15 +1,15 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, Pressable, Modal, ScrollView, Image } from 'react-native';
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 import env from '../env';
 import { API_REQUEST, checkAccessToken, redirectToLoginWithSessionExpiredMessage, showToast } from '../functions';
+import GlobalContext from './GlobalContext';
 
 const REQUEST_URL = `${env.API_URL}/orders`;
 
 const OrdersScreen = () => {
+  const {theme} = useContext(GlobalContext);
   const router = useRouter();
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -19,7 +19,7 @@ const OrdersScreen = () => {
       const response = await API_REQUEST(REQUEST_URL,'GET',null,true);
       const data = await response.json();
      
-      if(response.status===401)
+      if(response.status===401 || response.status===422)
         redirectToLoginWithSessionExpiredMessage(router);
       else if(response.status===200)
       {
@@ -38,8 +38,8 @@ const OrdersScreen = () => {
   const Header = () => {
     return (
       <View style={{position:'relative', alignItems: 'center',paddingBottom:20}}>
-        <Ionicons name="chevron-back-outline" size={30} color="#fff" style={{position:'absolute',left:0}} onPress={() => router.back()} />
-        <Text style={{ color:'#fff',marginTop:5,fontSize:18,fontWeight:'bold' }}>Orders</Text>
+        <Ionicons name="chevron-back-outline" size={30} color={theme.textColor} style={{position:'absolute',left:0}} onPress={() => router.back()} />
+        <Text style={{ color:theme.textColor,marginTop:5,fontSize:18,fontWeight:'bold' }}>Orders</Text>
       </View>
     );
   }
@@ -53,11 +53,11 @@ const OrdersScreen = () => {
                 <View style={{flexDirection:'row'}}>
                     <Image source={{uri:item.imageURL}} style={{width:50,height:50}} />
                     <View style={{marginTop:5}}>
-                            <Text style={{color:'#fff',fontWeight:'bold'}}>{item.name}</Text>
-                            <Text style={{color:'#fff',fontSize:12,marginTop:5}}>X{item.qty}</Text>
+                            <Text style={{color:theme.textColor,fontWeight:'bold'}}>{item.name}</Text>
+                            <Text style={{color:theme.textColor,fontSize:12,marginTop:5}}>X{item.qty}</Text>
                     </View>
                 </View>
-                <Text style={{color:'#fff',fontWeight:'bold'}}>${item.price}</Text>
+                <Text style={{color:theme.textColor,fontWeight:'bold'}}>${item.price}</Text>
             </View>
         );
     }
@@ -73,14 +73,14 @@ const OrdersScreen = () => {
               setModalVisible(!modalVisible);
             }}>
             <View style={styles.centeredView}>
-              <View style={styles.modalView}>
+              <View style={[styles.modalView,{backgroundColor:theme.backgroundColor}]}>
                 <View style={{flexDirection:'row',width:'100%',justifyContent:'space-between'}}>
                         <View>
-                        <Text style={{color:'#fff',fontWeight:'bold'}}>Order# {selectedOrder.id.toUpperCase().slice(5,13)}</Text>
+                        <Text style={{color:theme.textColor,fontWeight:'bold'}}>Order# {selectedOrder.id.toUpperCase().slice(5,13)}</Text>
                         </View>
                         <Pressable
                             onPress={() => setModalVisible(!modalVisible)}>
-                        <Ionicons name="close-outline" size={25} color="#fff" />
+                        <Ionicons name="close-outline" size={25} color={theme.textColor} />
                 </Pressable>
                 </View>
                 <FlatList 
@@ -92,11 +92,11 @@ const OrdersScreen = () => {
                 <View style={{width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                     <View style={{flex:8}}>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
-                             <Ionicons name="location" size={20} color="#fff" />
-                             <Text style={{color:'#fff',width:'90%',marginLeft:4}}>{get_shipping_address()}</Text>
+                             <Ionicons name="location" size={20} color={theme.textColor} />
+                             <Text style={{color:theme.textColor,width:'90%',marginLeft:4}}>{get_shipping_address()}</Text>
                         </View>
                     </View>    
-                    <Text style={{flex:2,textAlign:'right',color:'#fff',fontSize:20,fontWeight:'bold',textAlign:'right'}}>${parseFloat(selectedOrder.total/100)}</Text>
+                    <Text style={{flex:2,textAlign:'right',color:theme.textColor,fontSize:20,fontWeight:'bold',textAlign:'right'}}>${parseFloat(selectedOrder.total/100)}</Text>
                 </View>
               </View>
               
@@ -126,21 +126,21 @@ const OrdersScreen = () => {
         setModalVisible(true);
     }}>
       <View>
-            <Text style={{color:'#fff',fontWeight:'bold'}}>Order# {item.id.slice(5,13).toUpperCase()}</Text>
-            <Text style={{color:'#fff',opacity:0.7,marginTop:5}}>{formatDate(item.created_timestamp)}</Text>
+            <Text style={{color:theme.textColor,fontWeight:'bold'}}>Order# {item.id.slice(5,13).toUpperCase()}</Text>
+            <Text style={{color:theme.textColor,opacity:0.7,marginTop:5}}>{formatDate(item.created_timestamp)}</Text>
             <Text style={{color:'green',marginTop:10}}>Delivery by <Text style={{fontWeight:'bold'}}>21st Jan 2020</Text></Text>
       </View>
       <View style={{justifyContent:'justify-between',height:'100%',alignItems:'flex-end'}}>
-        <Text style={{color:'#fff',fontWeight:'bold',fontSize:18}}>
+        <Text style={{color:theme.textColor,fontWeight:'bold',fontSize:18}}>
         ${parseFloat(item.total/100)}
         </Text>
-        <Text style={{color:'#fff',marginTop:22}}>View</Text>
+        <Text style={{color:theme.textColor,marginTop:22}}>View</Text>
       </View>
     </Pressable>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor:theme.backgroundColor}]}>
       <Header />
       {orders.length ?  <FlatList
         data={orders}
@@ -149,7 +149,7 @@ const OrdersScreen = () => {
         contentContainerStyle={styles.orderList}
         style={{marginTop:5}}
       />:(<View style={{justifyContent:'center',alignItems:'center'}}>
-          <Text style={{color:'#fff',textAlign:'center',marginTop:50}}>No orders found</Text>
+          <Text style={{color:theme.textColor,textAlign:'center',marginTop:50}}>No orders found</Text>
       </View>)}
       {selectedOrder && <OrderDetailModal />}
     </View>
@@ -159,7 +159,7 @@ const OrdersScreen = () => {
 const styles = StyleSheet.create({
   container: {
         flex: 1,
-        backgroundColor: "#000",
+       
         paddingTop: 40,
         paddingHorizontal: 15,
   },
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     marginTop:250,
   },
   modalView: {
-    backgroundColor: '#000',
+  
     borderRadius: 5,
     borderColor:'gray',
     margin:20,

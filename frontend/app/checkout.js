@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { FlatList } from 'react-native-gesture-handler';
@@ -8,9 +8,11 @@ import { StripeProvider } from "@stripe/stripe-react-native";
 import PaymentButton from '../components/PaymentButton';
 import useGlobalStore from './useGlobalStore';
 import { checkAccessToken } from '../functions';
+import GlobalContext from './GlobalContext';
 
 export default function Checkout() {
   const{globals,setGlobals} = useGlobalStore();
+  const {theme,setTheme} = useContext(GlobalContext);
   const router = useRouter();
   const shippingCharge = 5;
   useEffect(() => {
@@ -19,8 +21,8 @@ export default function Checkout() {
   const Header = () => {
     return (
       <View style={{position:'relative', alignItems: 'center',borderBottomWidth:1,borderBottomColor:'gray',paddingBottom:20}}>
-        <Ionicons name="chevron-back-outline" size={30} color="#fff" style={{position:'absolute',left:0}} onPress={() => router.back()} />
-        <Text style={{ color:'#fff',marginTop:5,fontSize:18,fontWeight:'bold' }}>Checkout</Text>
+        <Ionicons name="chevron-back-outline" size={30} color={theme.textColor} style={{position:'absolute',left:0}} onPress={() => router.back()} />
+        <Text style={{ color: theme.textColor,marginTop:5,fontSize:18,fontWeight:'bold' }}>Checkout</Text>
       </View>
     );
   }
@@ -52,15 +54,15 @@ export default function Checkout() {
                     setGlobals({...globals,cartItems:globals.cartItems.map(item => item.id === product.id ? {...item,qty:item.qty-1} : item)})
               }
         }> 
-          <Ionicons name="remove-circle-outline" size={30} color="#fff" />
+          <Ionicons name="remove-circle-outline" size={30} color={theme.textColor} />
           </Pressable>
-        <Text style={{color:'#fff',marginHorizontal:10}}>{product.qty}</Text>
+        <Text style={{color: theme.textColor,marginHorizontal:10}}>{product.qty}</Text>
         <Pressable
           onPress={()=>
               setGlobals({...globals,cartItems:globals.cartItems.map(item => item.id === product.id ? {...item,qty:item.qty+1} : item)})
         }
         >
-        <Ionicons name="add-circle-outline" size={30} color="#fff" />
+        <Ionicons name="add-circle-outline" size={30} color={theme.textColor} />
         </Pressable>
       </View>
     );
@@ -73,17 +75,17 @@ export default function Checkout() {
           <View style={{flexDirection:'row'}}>
                 <Image source={{uri:item.imageURL}} style={{width:80,height:80}} />
                 <View style={{justifyContent:'space-between',paddingVertical:10}}>
-                  <Text style={{color:'#fff'}}>{item.name}</Text>
+                  <Text style={{color: theme.textColor}}>{item.name}</Text>
                   <QtySelector product={item}/>
                 </View>
           </View>
           <View style={{justifyContent:'space-between',paddingVertical:10,alignItems:'center'}}>
-              <Text style={{color:'#fff'}}>$ 
+              <Text style={{color: theme.textColor}}>$ 
               {item.price*globals.cartItems.filter(cartItem => cartItem.id === item.id)[0].qty}</Text>
               <Pressable onPress={()=>
                 setGlobals({...globals,cartItems:globals.cartItems.filter(cartItem => cartItem.id !== item.id)})
               }>
-              <Ionicons name="trash" size={30} color="#fff" />
+              <Ionicons name="trash" size={30} color={theme.textColor} />
               </Pressable>
           </View>
         </View>
@@ -96,7 +98,7 @@ export default function Checkout() {
         keyExtractor={item => item.id}
       />) : <View style={{alignItems:'center',justifyContent:'center',flex:1}}>
           <Ionicons name="cart-outline" size={50} color="gray" />
-          <Text style={{color:'#fff'}}>No items in cart</Text>
+          <Text style={{color: theme.textColor}}>No items in cart</Text>
         </View>
   } ;
   const getSubTotal = () => {
@@ -118,7 +120,7 @@ export default function Checkout() {
   }
   
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor:theme.backgroundColor}]}>
       <Header />
       <View style={{flex:1}}>
           <View style={{flex:10,marginTop:5,borderBottomWidth:1,borderBottomColor:'gray'}}>
@@ -127,21 +129,21 @@ export default function Checkout() {
           <View style={{flex:4,paddingHorizontal:3}}>
                 {/* <Pressable style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',marginVertical:10}} onPress={()=>router.push('/payment_methods/list')}>
                       <View style={{justifyContent:'space-between'}}>
-                          <Text style={{color:'#fff'}}>Payment</Text>
+                          <Text style={{color: theme.textColor}}>Payment</Text>
                           <View style={{flexDirection:'row',alignItems:'center',marginTop:10}}>
-                                <Ionicons name="wallet-outline" size={20} color="#fff" />
-                                <Text style={{color:'#fff',marginLeft:5}}>No Payment method selected</Text>
+                                <Ionicons name="wallet-outline" size={20} color={theme.textColor} />
+                                <Text style={{color: theme.textColor,marginLeft:5}}>No Payment method selected</Text>
                           </View>
                       </View>
-                      <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
+                      <Ionicons name="chevron-forward-outline" size={20} color={theme.textColor} />
                 </Pressable> */}
                 <Pressable style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end',borderTopWidth:1,borderTopColor:'gray',paddingVertical:10}} onPress={()=>router.push('/saved_addresses/list')}>
                       <View style={{justifyContent:'space-between'}}>
-                          <Text style={{color:'#fff'}}>Shipping To{' '+getAddressNickName()}</Text>
+                          <Text style={{color: theme.textColor}}>Shipping To{' '+getAddressNickName()}</Text>
                           {getShippingAddress() ? (
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                              <Ionicons name="location" size={20} color="#fff" />
-                              <Text style={{ color: '#fff' }}>{getShippingAddress()}</Text>
+                              <Ionicons name="location" size={20} color={theme.textColor} />
+                              <Text style={{ color: theme.textColor }}>{getShippingAddress()}</Text>
                             </View>
                           ) : (
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
@@ -150,24 +152,24 @@ export default function Checkout() {
                             </View>
                           )}
                       </View>
-                      <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
+                      <Ionicons name="chevron-forward-outline" size={20} color={theme.textColor} />
                 </Pressable>
                 <View style={{borderTopWidth:1,borderTopColor:'gray',paddingVertical:20}}>
                   <View style={{justifyContent:'space-between',flexDirection:'row'}}>
-                    <Text style={{color:'#fff'}}>Subtotal</Text>
-                    <Text style={{color:'#fff'}}>${getSubTotal().toFixed(2)}</Text>
+                    <Text style={{color: theme.textColor}}>Subtotal</Text>
+                    <Text style={{color: theme.textColor}}>${getSubTotal().toFixed(2)}</Text>
                   </View>
                   <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:10}}>
-                    <Text style={{color:'#fff'}}>Shipping</Text>
-                    <Text style={{color:'#fff'}}>${shippingCharge}</Text>
+                    <Text style={{color: theme.textColor}}>Shipping</Text>
+                    <Text style={{color: theme.textColor}}>${shippingCharge}</Text>
                   </View>
                   <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:10}}>
-                    <Text style={{color:'#fff'}}>Tax</Text>
-                    <Text style={{color:'#fff'}}>${getTax()}</Text>
+                    <Text style={{color: theme.textColor}}>Tax</Text>
+                    <Text style={{color: theme.textColor}}>${getTax()}</Text>
                   </View>
                   <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:10}}>
-                    <Text style={{color:'#fff'}}>Total</Text>
-                    <Text style={{color:'#fff'}}>${getTotal()}</Text>
+                    <Text style={{color: theme.textColor}}>Total</Text>
+                    <Text style={{color: theme.textColor}}>${getTotal()}</Text>
                   </View>
                 </View>
                
@@ -187,7 +189,7 @@ export default function Checkout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+  
     paddingTop: 40,
     paddingHorizontal: 15,
   },

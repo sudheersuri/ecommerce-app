@@ -3,24 +3,26 @@
   const lightTheme = {
     mode:'light',
     backgroundColor: '#F3F3F3',
-    textColor: 'text-black',
-    createBackgroundColor:'white',
+    textColor: '#000000',
     moonColor:'#888888',
-    listItemBackgroundColor:'#FFFFFF',
-    taskNameColor:'#000000',
-    doneBackgroundColor:'#CEE5D4'
+    logoBackgroundColor:'#ECEFF1',
+    buttonThemeColor:['#FFA500', '#9C00E4'],
+    menuIconColor:'#000',
+    selectedAddressItemBackgroundColor:'#FFA500',
     // ... other light theme styles
   };
 
   const darkTheme = {
     mode:'dark',
+    menuIconColor:'#fff',
+    buttonThemeColor:['#DF00BC', '#9C00E4'],
+    selectedAddressItemBackgroundColor:'#171717',
     backgroundColor: 'black',
-    createBackgroundColor:'black',
-    textColor: 'text-white',
+    fieldBackgroundColor:'#171717',
+    textColor: '#fff',
     moonColor:'#FDF7D3',
-    listItemBackgroundColor:'#111111',
-    taskNameColor:'#FFFFFF',
-    doneBackgroundColor:'#102716'
+    menuIconColor:'#fff',
+    logoBackgroundColor:'#171717'
     // ... other dark theme styles
   };
 

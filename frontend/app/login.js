@@ -6,18 +6,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Toast from 'react-native-toast-message';
-import {  useEffect, useState } from "react";
+import {  useContext, useEffect, useState } from "react";
 import { SocialMediaButton } from "../components/SocialMediaButton";
 
 import { API_REQUEST, showToast } from "../functions";
 import env from '../env';
 import useGlobalStore from "./useGlobalStore";
+import GlobalContext from "./GlobalContext";
 
 const REQUEST_URL = `${env.API_URL}/login`;
 
 export default function Login() {
+  const {theme,setTheme} = useContext(GlobalContext);
   const{globals,setGlobals} = useGlobalStore();
-  const {theme} = globals;
   const [loading,setLoading] = useState(false);
   const params = useLocalSearchParams();
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function Login() {
     const response = await API_REQUEST(REQUEST_URL,'POST',reqdata);
     const data = await response.json();
     setLoading(false);
-    if(response.status===401) 
+    if(response.status===401 || response.status===422) 
     {
       showToast('error',data.message);
       return;
@@ -67,14 +68,14 @@ export default function Login() {
   return (
     <>
     <StatusBar />
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <Text style={styles.smallText}>Login with one of the following options</Text>
+    <ScrollView style={[styles.container,{backgroundColor:theme.backgroundColor}]}>
+      <Text style={[styles.title,{color:theme.textColor}]}>Login</Text>
+      <Text style={[styles.smallText,{color:theme.textColor}]}>Login with one of the following options</Text>
       <View style={styles.SocialMediaButtonsContainer}>
          <SocialMediaButton icon="logo-google"/>
          <SocialMediaButton icon="logo-apple"/>
       </View>
-      <Text style={[styles.label,{marginBottom:10,marginLeft:7}]}>Email</Text>
+      <Text style={[styles.label,{marginBottom:10,marginLeft:7,color:theme.textColor}]}>Email</Text>
       <View style={{position:"relative"}}>
       <Controller
         control={control}
@@ -88,8 +89,7 @@ export default function Login() {
             onChangeText={onChange}
             value={value}
             placeholderTextColor="#888888"
-            style={styles.field}
-          
+            style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
           />
         )}
         name="email"
@@ -97,7 +97,7 @@ export default function Login() {
       {errors.email && <Text style={styles.errorText}>* Email is required.</Text>}
       </View>
 
-      <Text style={[styles.label,{marginTop:30,marginBottom:10,marginLeft:7}]}>Password</Text>
+      <Text style={[styles.label,{marginTop:30,marginBottom:10,marginLeft:7,color:theme.textColor}]}>Password</Text>
       <View style={{position:"relative"}}>
       <Controller
         control={control}
@@ -112,7 +112,7 @@ export default function Login() {
             onChangeText={onChange}
             value={value}
             secureTextEntry
-            style={styles.field}
+            style={[styles.field,{backgroundColor:theme.fieldBackgroundColor,color:theme.textColor}]}
             placeholderTextColor="#888888"
           />
         )}
@@ -124,7 +124,7 @@ export default function Login() {
       </View>
       <Pressable  onPress={handleSubmit(onSubmit)}>
       <LinearGradient
-          colors={['#DF00BC', '#9C00E4']}
+          colors={theme.buttonThemeColor}
           start={[0, 0]}
           end={[1, 0]}
           style={[styles.button,{marginTop:40}]}
@@ -136,7 +136,7 @@ export default function Login() {
       </Pressable>
       <Link href="/register" asChild>
              <Pressable style={{alignItems:'center',marginTop:15}}>
-                <Text style={{color:'#A2A2A2'}}>Don't have an account? <Text style={{color:'#fff'}}>Register</Text></Text>
+                <Text style={{color:'#A2A2A2'}}>Don't have an account? <Text style={{color:theme.textColor}}>Register</Text></Text>
              </Pressable>
       </Link>
       <Toast />
@@ -150,7 +150,7 @@ const styles = StyleSheet.create(
   {
     container:{
       flex:1,
-      backgroundColor:'#000',
+     
       paddingTop:40,
       paddingHorizontal:15,
     },
@@ -166,7 +166,6 @@ const styles = StyleSheet.create(
     title:{
       fontSize:30,
       fontWeight:'500',
-      color:'#fff',
       marginTop:20,
     },
     smallText:{
@@ -176,7 +175,7 @@ const styles = StyleSheet.create(
       marginLeft:7
     },
     label:{
-      color:'#fff',
+      
       fontSize:17
     },
     errorText:{
@@ -190,7 +189,6 @@ const styles = StyleSheet.create(
       borderRadius:15,
       borderColor:'#1F1F1F',
       borderWidth:1,
-      color:'#fff',
       paddingVertical:18,
       paddingHorizontal:15,
     }
