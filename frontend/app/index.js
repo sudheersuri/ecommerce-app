@@ -24,6 +24,7 @@ import Sidebar from "../components/Sidebar";
 import useGlobalStore from "./useGlobalStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GlobalContext from "./GlobalContext";
+import { ScrollView } from "react-native-gesture-handler";
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
@@ -42,7 +43,7 @@ export default function Home({ navigation }) {
       const response = await API_REQUEST(REQUEST_URL, "GET", null, true);
       const data = await response.json();
 
-      if (response.status === 401)
+      if (response.status === 401 || response.status === 422)
       {
         redirectToLoginWithSessionExpiredMessage(router);
         return;
@@ -69,7 +70,7 @@ export default function Home({ navigation }) {
       const response = await API_REQUEST(REQUEST_URL, "GET", null, true);
       const data = await response.json();
 
-      if (response.status === 401)
+      if (response.status === 401 || response.status === 422)
         redirectToLoginWithSessionExpiredMessage(router);
       else if (response.status === 200) {
         if (data.length) {
@@ -218,13 +219,14 @@ export default function Home({ navigation }) {
     );
     
     return (
+      <View>
       <FlatList
         data={filteredProducts}
         renderItem={({ item, index }) => ProductItem({ item, index })}
         keyExtractor={(item) => item.id.toString()}
-        numColumns={numColumns}
-        
+        numColumns={numColumns}    
       />
+      </View>
     );
   };
   const CategoryList = () => {
@@ -319,10 +321,14 @@ export default function Home({ navigation }) {
    
     if(products.length && categories.length)
     return (
-      <View>
+      <View style={{flex:1}}>
+        <View style={{flex:2}}>
         <CategoryList />
         <SearchBar />
+        </View>
+        <View style={{flex:15,paddingBottom:20}}>
         <ProductList />
+        </View>
       </View>
     );
     else return (<View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
